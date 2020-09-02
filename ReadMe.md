@@ -42,6 +42,5 @@ Connected to the virtual environement, run the following command:
 ## Practical Work 2 -- PW2
 
 ### Install
-Connected to the virtual environement, run the following command:
 
 `pip3 install -r requirements_pw2.txt`
