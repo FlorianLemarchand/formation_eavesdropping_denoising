@@ -7,7 +7,7 @@ Date: 2020
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage.io import imread, imsave
-from skimage.util import random_noise
+from skimage.util import random_noise, img_as_ubyte, img_as_float
 
 
 # Read image
@@ -66,7 +66,7 @@ plt.imshow(green_channel_2, cmap='gray')
 plt.show()
 plt.close()
 
-# Noise im1 with Gaussian Noise
+# Noise im1 with Gaussian Noise --> N(0,50)
 # https://scikit-image.org/docs/dev/api/skimage.util.html#skimage.util.random_noise
 mean = 0
 sigma = 50
@@ -105,4 +105,43 @@ for i, sigma in enumerate(sigmas):
 plt.show()
 plt.close()
 
+# Display histograms of clean and noisy images
+im1_heigth, im1_width, im1_channels = im1.shape
 
+# im1_heigth = im1.shape[0]
+# im1_width = im1.shape[1]
+# im1_channels = im1.shape[2]
+
+vec_im1 = np.reshape(im1, (im1_heigth * im1_width, im1_channels))  # Vectorize im1
+vec_im1_noisy = np.reshape(img_as_ubyte(im1_noisy), (im1_heigth * im1_width, im1_channels))  # Vectorize im1_noisy
+
+
+plt.subplot(3,3,1)
+plt.title('Image 1')
+plt.imshow(im1)
+plt.subplot(3,3,3)
+plt.title('Noisy Image 1')
+plt.imshow(im1_noisy)
+
+plt.subplot(3,3,4)
+plt.title('Hist R')
+plt.hist(vec_im1[:, 0], bins=256)
+plt.subplot(3,3,5)
+plt.title('Hist G')
+plt.hist(vec_im1[:, 1], bins=256)
+plt.subplot(3,3,6)
+plt.title('Hist B')
+plt.hist(vec_im1[:, 2], bins=256)
+
+plt.subplot(3,3,7)
+plt.title('Hist R Noisy')
+plt.hist(vec_im1_noisy[:, 0], bins=256, range=(1, 254))
+plt.subplot(3,3,8)
+plt.title('Hist G Noisy')
+plt.hist(vec_im1_noisy[:, 1], bins=256, range=(1, 254))
+plt.subplot(3,3,9)
+plt.title('Hist B Noisy')
+plt.hist(vec_im1_noisy[:, 2], bins=256, range=(1, 254))
+
+plt.show()
+plt.close()
