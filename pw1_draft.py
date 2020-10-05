@@ -145,3 +145,26 @@ plt.hist(vec_im1_noisy[:, 2], bins=256, range=(1, 254))
 
 plt.show()
 plt.close()
+
+
+def mean_filter(input, kernel_size):
+    kernel = np.ones((kernel_size, kernel_size))
+    output = 1 / np.square(kernel_size) * convolve(input, kernel)
+    return output
+
+def approx_gauss_filter_3(input):
+    kernel = [[1, 2, 1], [2, 4, 2], [1, 2, 1]]
+    sum = np.sum(kernel)
+
+    output = 1 / sum * convolve(input, kernel)
+    return output
+
+def approx_gauss_filter_5(input):
+    kernel = [[1, 4, 6, 4, 1],
+              [4, 16, 24, 16, 4],
+              [1, 24, 36, 24, 6],
+              [4, 16, 24, 16, 4],
+              [1, 4, 6, 4, 1]]
+    sum = np.sum(kernel)
+    output = 1 / sum * convolve(input, kernel)
+    return output

@@ -56,7 +56,7 @@ In this section, you will use some basics code lines to manipulate images. For s
 
    1. Load images 'im1.jpg' and 'im2.jpg' from 'data' directory.
    
-        `im1 = imread('data/im1.jpg')`
+        `im1 = imread('data/in/im1.jpg')`
    
    2. Print their shapes, means, standard deviation (std), mins ans maxs using:
    
@@ -161,7 +161,7 @@ In this section you will experience synthetic image noising and quality assessme
    2. Use a library to do the same noising in one line:
    
         ```
-        im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0 var=variance, clip=False)
+        im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=False)
         ```
        * _Display 'im_noise_lib' and its histogram._ 
        
@@ -208,3 +208,61 @@ In this section you will experience synthetic image noising and quality assessme
    5. Apply sequentially two different noise types and measure the metrics. 
    
 ## 3. Denoising using basic filtering
+
+In this section you will take a step towards denoising. Basic filtering will be used and the quality measured and observed to highlight the limits of such basic processings. 
+   
+   1. Filtering Framework
+      ```
+      # Measure noisy PSNR/SSIM
+      print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
+      
+      # Filter loop function
+      def filter_loop(noisy_image, kernel, padding_type='zeros'):
+        height, width = noisy_image.shape
+        kernel_size = kernel.shape[0]
+    
+        # Initialize the output array
+        output = np.zeros(noisy_image.shape)
+    
+        # Generate padding
+        padding_size = int(kernel_size/2)
+    
+        if padding_type is 'zeros':
+            padded_input = np.zeros((height + 2 * padding_size, width + 2 * padding_size))
+        elif padding_type is 'ones':
+            padded_input = np.ones((height + 2 * padding_size, width + 2 * padding_size))
+    
+        padded_input[padding_size:padding_size+height, padding_size:padding_size+width] = noisy_image
+    
+        # Loop over the image
+        for i in range(0, height):
+            for j in range(0, width):
+                output[i, j] = np.sum(np.multiply(kernel, padded_input[i:i+kernel_size, j:j+kernel_size]))
+    
+        return output
+      
+      # Use function to mean filter
+      hand_denoised = filter_loop(im_noise_lib, np.ones((3, 3)) / 9.)
+      
+      # Measure denoised PSNR/SSIM
+      print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
+      ```
+   
+   2. Approximate Gaussian Filtering 
+      ```
+      # Measure noisy PSNR/SSIM
+      print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
+      
+      # Filter
+      def mean_filter(input, kernel_size):
+        kernel = np.ones((kernel_size, kernel_size))
+        output = 1 / np.square(kernel_size) * convolve(input, kernel)
+        return output
+      mean_denoised = mean_filter(im_noise_lib, 3)
+      
+      # Measure denoised PSNR/SSIM
+      print_psnr_ssim(gauss_denoised, im1_gray, 'Approximate Gaussian Denoised')
+      ```
+   
+   3. Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
+
