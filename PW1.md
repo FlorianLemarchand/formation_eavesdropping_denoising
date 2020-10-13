@@ -3,15 +3,8 @@
 ## Install
 
 1. Open 'FCMR40' virtual machine using VirtualBox. Password: fcmr40 
-2. A little update:
 
-    `sudo sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list`
-
-    `sudo apt-get update && sudo apt-get dist-upgrade`
-
-    `sudo apt install virtualenv`
-
-3. Get the code repository
+2. Get the code repository
 
     Open a terminal:
     Ctrl + Alt + T
@@ -19,6 +12,18 @@
     `cd ~/Desktop`
 
     `git clone https://github.com/FlorianLemarchand/formation_eavesdropping_denoising.git`
+    
+    The digital version of this practical work guidance is available at the repository root ('PW1.html'). Digital version will be useful to copy paste snippets of code.
+    
+3. A little update:
+
+    `sudo sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list`
+
+    `sudo apt-get update && sudo apt-get dist-upgrade`
+
+    `sudo apt install virtualenv`
+
+
 
 4. Setup the python environment
 
