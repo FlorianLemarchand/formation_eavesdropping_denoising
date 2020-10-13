@@ -56,11 +56,10 @@ In this section, you will use some basics code lines to manipulate images. For s
 
    1. Load images 'im1.jpg' and 'im2.jpg' from 'data' directory.
    
-        `im1 = imread('data/in/im1.jpg')`
+        im1 = imread('data/in/im1.jpg')
    
-   2. Print their shapes, means, standard deviation (std), mins ans maxs using:
-   
-        ```
+   2. Print their shapes, means, standard deviation (std), mins ans maxs:   
+        
         # Print the shapes, means, std, mins, maxs of the images
         print('Im1 ==> Shape: {} / Mean: {} / Std: {} / Min: {} / Max: {}'.format(im1.shape,
                                                                                   np.round(np.mean(im1), 2),
@@ -73,13 +72,11 @@ In this section, you will use some basics code lines to manipulate images. For s
                                                                                   np.round(np.std(im2), 2),
                                                                                   np.min(im2),
                                                                                   np.max(im2)))
-        ```
 
-       _Which dimensions are the height, width and number of channels? Note that this order is not the same for every libraries!_
+       _Which dimensions are the height, width and number of channels? Note that this order is not the same for all libraries!_
 
    3. Save/Display the images:
-   
-        ```
+    
         # Save the patches
         makedirs('data/out', exist_ok=True)
         imsave('data/out/crop_1.jpg', crop_1)
@@ -93,11 +90,10 @@ In this section, you will use some basics code lines to manipulate images. For s
         plt.title('Image 2')
         plt.imshow(im2)
         plt.show()   
-        ```
+        
       
    4. Play with Python indexing to manipulate images and display them:
-        
-        ```
+                
         # Crop patchs
         crop_1 = im1[0:150, 0:150, :]
         crop_2 = im2[0:100, 150:250, :]
@@ -114,11 +110,9 @@ In this section, you will use some basics code lines to manipulate images. For s
         # Down-Sample the image
         stride4 = im1[0:-1:4, 0:-1:4, :]
         stride8 = im1[0:-1:8, 0:-1:8, :]    
-        ```
-   
+          
    5. Compute horizontal and vertical gradients
         
-        ```
         # Transform to grayscale
         im1_gray = rgb2gray(im1)      
         print('Grayscale image shape:', im1_gray.shape)
@@ -126,15 +120,13 @@ In this section, you will use some basics code lines to manipulate images. For s
         # Compute horizontal and vertical gradients
         vgrad = im1_gray[0:-2, :] - im1_gray[1:-1, :]
         hgrad = im1_gray[:, 0:-2] - im1_gray[:, 1:-1]
-        ```
  
-## 2. Synthetic Dataset Building
+## 2. Synthetic Noising and Quality Assessement
 
 In this section you will experience synthetic image noising and quality assessment. For that end the scikit-image python package is used.
 
    1. Generate a map of white Gaussian noise with standard deviation 50. Display its distribution through an histogram. Add the noise to im1. 
        
-        ```
         sigma = 50
         # Cast the image and parameters to float : each value coded on 64-bit float with value in [0,1]
         im1_gray = img_as_float(im1_gray)      
@@ -156,31 +148,24 @@ In this section you will experience synthetic image noising and quality assessme
         plt.subplot(2,2,3)
         plt.imshow(im_noise, cmap='gray')
         plt.show()
-        ```
       
    2. Use a library to do the same noising in one line:
    
-        ```
         im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=False)
-        ```
        * _Display 'im_noise_lib' and its histogram._ 
        
    3. Quality assessment of the noisy image:
    
-       ```
-       # Measure the quality of the noisy images with respect to the clean image
-       psnr = compare_psnr(im_noise, im1_gray)
-       mse = compare_mse(im_noise, im1_gray)
-       ssim = compare_ssim(im_noise, im1_gray)
-       print('im_noise: PSNR: {} / MSE: {} / SSIM: {}'.format(psnr, mse, ssim))
-       ``
+		# Measure the quality of the noisy images with respect to the clean image
+		psnr = compare_psnr(im_noise, im1_gray)
+		mse = compare_mse(im_noise, im1_gray)
+		ssim = compare_ssim(im_noise, im1_gray)
+		print('im_noise: PSNR: {} / MSE: {} / SSIM: {}'.format(psnr, mse, ssim))
        
    4. Display different intensities of noise applied to im1:
        
-       ```
-        # Noise im1 with different sigmas
-        sigmas = range(20, 161, 20)
-        
+        # Noise im1 with different sigmas       
+        sigmas = range(20, 161, 20)        
         ncol = 3
         nrow = int((len(sigmas) + 2) / ncol)
         
@@ -201,9 +186,8 @@ In this section you will experience synthetic image noising and quality assessme
             plt.imshow(im_noise, cmap='gray')
         
         plt.show()
-       ```
       
-   4. Try other noise types in the 'random_noise' function. [Documentation](https://scikit-image.org/docs/0.13.x/api/skimage.util.html#skimage.util.random_noise). Measure the resulting PSNR and SSIM.
+   4. Try other noise types in the 'random_noise' function [(Documentation)](https://scikit-image.org/docs/0.13.x/api/skimage.util.html#skimage.util.random_noise). Measure the resulting PSNR and SSIM.
    
    5. Apply sequentially two different noise types and measure the metrics. 
    
@@ -212,12 +196,12 @@ In this section you will experience synthetic image noising and quality assessme
 In this section you will take a step towards denoising. Basic filtering will be used and the quality measured and observed to highlight the limits of such basic processings. 
    
    1. Filtering Framework
-      ```
-      # Measure noisy PSNR/SSIM
-      print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
+
+      	# Measure noisy PSNR/SSIM
+      	print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
       
-      # Filter loop function
-      def filter_loop(noisy_image, kernel, padding_type='zeros'):
+      	# Filter loop function
+      	def filter_loop(noisy_image, kernel, padding_type='zeros'):
         height, width = noisy_image.shape
         kernel_size = kernel.shape[0]
     
@@ -241,28 +225,83 @@ In this section you will take a step towards denoising. Basic filtering will be 
     
         return output
       
-      # Use function to mean filter
-      hand_denoised = filter_loop(im_noise_lib, np.ones((3, 3)) / 9.)
+      	# Use function to mean filter
+      	hand_denoised = filter_loop(im_noise_lib, np.ones((3, 3)) / 9.)
       
-      # Measure denoised PSNR/SSIM
-      print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
-      ```
+      	# Measure denoised PSNR/SSIM
+      	print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
    
    2. Approximate Gaussian Filtering 
-      ```
-      # Measure noisy PSNR/SSIM
-      print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
-      
-      # Filter
-      def mean_filter(input, kernel_size):
-        kernel = np.ones((kernel_size, kernel_size))
-        output = 1 / np.square(kernel_size) * convolve(input, kernel)
-        return output
-      mean_denoised = mean_filter(im_noise_lib, 3)
-      
-      # Measure denoised PSNR/SSIM
-      print_psnr_ssim(gauss_denoised, im1_gray, 'Approximate Gaussian Denoised')
-      ```
-   
-   3. Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
 
+	      # Measure noisy PSNR/SSIM
+	      print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
+	      
+	      # Filter
+	      def mean_filter(input, kernel_size):
+		kernel = np.ones((kernel_size, kernel_size))
+		output = 1 / np.square(kernel_size) * convolve(input, kernel)
+		return output
+	      mean_denoised = mean_filter(im_noise_lib, 3)
+	      
+	      # Measure denoised PSNR/SSIM
+	      print_psnr_ssim(gauss_denoised, im1_gray, 'Approximate Gaussian Denoised')
+	   
+3. Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
+	
+4. Low Pass Transform Denoising
+	
+	      # Transform the image and shift the result
+	      fft_clean = fftshift(fft2(im1_gray))
+	      fft_noisy = fftshift(fft2(im_noise_lib))
+	      
+	      shape = fft_noisy.shape
+	      middle_y, middle_x = int((shape[0] + 1.)/2.), int((shape[1]+1.)/2.)
+	      
+	      
+	      # Keep only a part of the coefficients
+	      percentage_keep = 0.2
+	      fft_thresh = fft_noisy.copy()  # init an output image
+	      fft_thresh[:, :] = 0.  # Set to 0. +0.j
+	      half_y_keep = int(((int(percentage_keep * shape[0]))+1)/2.)  # Compute the size of the window to keep
+	      half_x_keep = int(((int(percentage_keep * shape[1]))+1)/2.)
+	      fft_thresh[middle_y - half_y_keep: middle_y + half_y_keep, middle_x - half_x_keep: middle_x + half_x_keep] = \
+		  fft_noisy[middle_y - half_y_keep: middle_y + half_y_keep, middle_x - half_x_keep: middle_x + half_x_keep]
+	      
+	      # Inverse transform
+	      im_denoised = ifft2(ifftshift(fft_thresh)).real
+	      im_denoised = np.clip(im_denoised, 0., 1.)  # Ensure the values stay in [0., 1.]
+	      
+	      print_psnr_ssim(im_denoised, im1_gray, 'Denoised')
+	      
+	      # Display
+		if True:
+		  	plt.subplot(3, 2, 1)
+	  		plt.imshow(im1_gray, cmap='gray')
+	  		plt.title('Clean Image')
+      
+          plt.subplot(3, 2, 2)
+          plt.imshow(np.abs(fft_clean), norm=LogNorm())
+          plt.title('Clean Spectrum')
+          plt.colorbar()
+      
+          plt.subplot(3, 2, 3)
+          plt.imshow(im_noise_lib, cmap='gray')
+          plt.title('Noisy Image')
+      
+          plt.subplot(3, 2, 4)
+          plt.imshow(np.abs(fft_noisy), norm=LogNorm())
+          plt.title('Noisy Spectrum')
+          plt.colorbar()
+      
+          plt.subplot(3, 2, 5)
+          plt.imshow(im_denoised, cmap='gray')
+          plt.title('Denoised Image')
+      
+          plt.subplot(3, 2, 6)
+          plt.imshow(np.abs(fft_thresh), norm=LogNorm(vmin=0.1))
+          plt.title('Denoised Spectrum')
+          plt.colorbar()
+      
+          plt.show()
+
+Do you think better denoising can be achieved? Let see in the next practical work what is the state of the art of denoising.
