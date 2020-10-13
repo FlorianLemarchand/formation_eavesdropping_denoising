@@ -15,13 +15,16 @@
     
     The digital version of this practical work guidance is available at the repository root ('PW1.html'). Digital version will be useful to copy paste snippets of code.
     
-3. A little update:
+3. A little update and new installs:
 
     `sudo sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list`
 
     `sudo apt-get update && sudo apt-get dist-upgrade`
+    This command can be long (few minutes). You can read the following of the subject during that time.
 
     `sudo apt install virtualenv`
+    
+    `sudo apt install spyder3`
 
 
 
@@ -29,11 +32,11 @@
 
     `cd formation_eavesdropping_denoising`
        
-    * Create virtual environement:
+    * Create a virtual environement:
 
     `virtualenv -p python3 venv`
 
-    * Connect to the virtual environement:
+    * Connect to this virtual environement:
 
     `source venv/bin/activate`
 
@@ -55,9 +58,18 @@
 
 
 ## 1. Image Manipulations
-In this section, you will use some basics code lines to manipulate images. For simplicity, write the code in the python script 'pw1.py'. You can run this script from the terminal:
+In this section, you will use some basics code lines to manipulate images.
 
-`python3 pw1.py`
+For simplicty, use Spyder IDE to write and run the code. You need to tell Spyder to run under the venv. From the console with venv activated, run:
+
+`spyder3`
+
+When Spyder opens, go to 'Tools --> Preferences --> Python Interpreter', check 'Use the following Python interpreter' and select '/home/fcmr40/Desktop/formation_eavesdropping_denoising/venv/bin/python3'.
+
+Now, you can open the script 'pw1.py' and start editing it. The run shortcut is 'F5'. If everything is fine, a success message should be printed!
+
+Through this PW you will update the script with given snippets and code you will develop. New snippets often use outputs from previous ones. Nevertheless, do not hesitate to clean regularily the script to avoid your console and display to be flooded. Block comment shortcut : 'Ctrl + 4', Block uncomment shortcut : 'Ctrl + 5'.
+
 
    1. Load images 'im1.jpg' and 'im2.jpg' from 'data' directory.
    
@@ -84,8 +96,8 @@ In this section, you will use some basics code lines to manipulate images. For s
     
         # Save the patches
         makedirs('data/out', exist_ok=True)
-        imsave('data/out/crop_1.jpg', crop_1)
-        imsave('data/out/crop_2.jpg', crop_2)
+        imsave('data/out/im1.jpg', im1)
+        imsave('data/out/im2.jpg', im2)
         
         # Display the images
         plt.subplot(2,1,1)
@@ -95,6 +107,8 @@ In this section, you will use some basics code lines to manipulate images. For s
         plt.title('Image 2')
         plt.imshow(im2)
         plt.show()   
+        
+	_Check that the images have well been saved in './data/out/'_
         
       
    4. Play with Python indexing to manipulate images and display them:
@@ -115,6 +129,7 @@ In this section, you will use some basics code lines to manipulate images. For s
         # Down-Sample the image
         stride4 = im1[0:-1:4, 0:-1:4, :]
         stride8 = im1[0:-1:8, 0:-1:8, :]    
+	_Print/display the resulting shapes and images to understand the commands._ 
           
    5. Compute horizontal and vertical gradients
         
@@ -125,10 +140,11 @@ In this section, you will use some basics code lines to manipulate images. For s
         # Compute horizontal and vertical gradients
         vgrad = im1_gray[0:-2, :] - im1_gray[1:-1, :]
         hgrad = im1_gray[:, 0:-2] - im1_gray[:, 1:-1]
- 
-## 2. Synthetic Noising and Quality Assessement
+	_Print/display the resulting shapes and images to understand the commands._ 
+	
+## 2. Synthetic Image Noising and Quality Assessement
 
-In this section you will experience synthetic image noising and quality assessment. For that end the scikit-image python package is used.
+In this section you will experience synthetic image noising and quality assessment. For that end, the scikit-image python package is used.
 
    1. Generate a map of white Gaussian noise with standard deviation 50. Display its distribution through an histogram. Add the noise to im1. 
        
@@ -144,6 +160,9 @@ In this section you will experience synthetic image noising and quality assessme
         # Add noise to image
         im_noise = im1_gray + noise_map
         
+        # Avoid values out of the [0.,1.] range
+        im_noise = np.clip(im_noise, 0., 1.)
+        
         # Display the value histogram of the noise map, the original and noisy images
         vec_noise = np.reshape(noise_map, noise_map.size)  # Vectorize noise_map
         plt.subplot(2,2,1)
@@ -154,9 +173,9 @@ In this section you will experience synthetic image noising and quality assessme
         plt.imshow(im_noise, cmap='gray')
         plt.show()
       
-   2. Use a library to do the same noising in one line:
+   2. Use a library to do the same noising with only one line:
    
-        im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=False)
+        im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=True)
        * _Display 'im_noise_lib' and its histogram._ 
        
    3. Quality assessment of the noisy image:
@@ -207,34 +226,35 @@ In this section you will take a step towards denoising. Basic filtering will be 
       
       	# Filter loop function
       	def filter_loop(noisy_image, kernel, padding_type='zeros'):
-        height, width = noisy_image.shape
-        kernel_size = kernel.shape[0]
-    
-        # Initialize the output array
-        output = np.zeros(noisy_image.shape)
-    
-        # Generate padding
-        padding_size = int(kernel_size/2)
-    
-        if padding_type is 'zeros':
-            padded_input = np.zeros((height + 2 * padding_size, width + 2 * padding_size))
-        elif padding_type is 'ones':
-            padded_input = np.ones((height + 2 * padding_size, width + 2 * padding_size))
-    
-        padded_input[padding_size:padding_size+height, padding_size:padding_size+width] = noisy_image
-    
-        # Loop over the image
-        for i in range(0, height):
-            for j in range(0, width):
-                output[i, j] = np.sum(np.multiply(kernel, padded_input[i:i+kernel_size, j:j+kernel_size]))
-    
-        return output
+			height, width = noisy_image.shape
+			kernel_size = kernel.shape[0]
+		    
+			# Initialize the output array
+			output = np.zeros(noisy_image.shape)
+		    
+			# Generate padding
+			padding_size = int(kernel_size/2)
+		    
+			if padding_type is 'zeros':
+			    padded_input = np.zeros((height + 2 * padding_size, width + 2 * padding_size))
+			elif padding_type is 'ones':
+			    padded_input = np.ones((height + 2 * padding_size, width + 2 * padding_size))
+		    
+			padded_input[padding_size:padding_size+height, padding_size:padding_size+width] = noisy_image
+		    
+			# Loop over the image
+			for i in range(0, height):
+			    for j in range(0, width):
+				output[i, j] = np.sum(np.multiply(kernel, padded_input[i:i+kernel_size, j:j+kernel_size]))
+		    
+			return output
       
       	# Use function to mean filter
       	hand_denoised = filter_loop(im_noise_lib, np.ones((3, 3)) / 9.)
       
       	# Measure denoised PSNR/SSIM
       	print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
+      	
    
    2. Approximate Gaussian Filtering 
 
@@ -243,15 +263,17 @@ In this section you will take a step towards denoising. Basic filtering will be 
 	      
 	      # Filter
 	      def mean_filter(input, kernel_size):
-		kernel = np.ones((kernel_size, kernel_size))
-		output = 1 / np.square(kernel_size) * convolve(input, kernel)
-		return output
+			kernel = np.ones((kernel_size, kernel_size))
+			output = 1 / np.square(kernel_size) * convolve(input, kernel)
+			return output
 	      mean_denoised = mean_filter(im_noise_lib, 3)
 	      
 	      # Measure denoised PSNR/SSIM
 	      print_psnr_ssim(gauss_denoised, im1_gray, 'Approximate Gaussian Denoised')
+_Try different filter kernel sizes._ 
 	   
 3. Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
+_In your opinion, which one gives the better denoising (objectively and subjectively)?_
 	
 4. Low Pass Transform Denoising
 	

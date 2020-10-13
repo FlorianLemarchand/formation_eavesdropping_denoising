@@ -48,7 +48,7 @@
    </li>
    <li>
     <p>
-     A little update:
+     A little update and new installs:
     </p>
     <p>
      <code>
@@ -59,10 +59,17 @@
      <code>
       sudo apt-get update &amp;&amp; sudo apt-get dist-upgrade
      </code>
+     <br/>
+     This command can be long (few minutes). You can read the following of the subject during that time.
     </p>
     <p>
      <code>
       sudo apt install virtualenv
+     </code>
+    </p>
+    <p>
+     <code>
+      sudo apt install spyder3
      </code>
     </p>
    </li>
@@ -77,7 +84,7 @@
     </p>
     <ul>
      <li>
-      Create virtual environement:
+      Create a virtual environement:
      </li>
     </ul>
     <p>
@@ -87,7 +94,7 @@
     </p>
     <ul>
      <li>
-      Connect to the virtual environement:
+      Connect to this virtual environement:
      </li>
     </ul>
     <p>
@@ -137,12 +144,24 @@
    1. Image Manipulations
   </h2>
   <p>
-   In this section, you will use some basics code lines to manipulate images. For simplicity, write the code in the python script 'pw1.py'. You can run this script from the terminal:
+   In this section, you will use some basics code lines to manipulate images.
+  </p>
+  <p>
+   For simplicty, use Spyder IDE to write and run the code. You need to tell Spyder to run under the venv. From the console with venv activated, run:
   </p>
   <p>
    <code>
-    python3 pw1.py
+    spyder3
    </code>
+  </p>
+  <p>
+   When Spyder opens, go to 'Tools --&gt; Preferences --&gt; Python Interpreter', check 'Use the following Python interpreter' and select '/home/fcmr40/Desktop/formation_eavesdropping_denoising/venv/bin/python3'.
+  </p>
+  <p>
+   Now, you can open the script 'pw1.py' and start editing it. The run shortcut is 'F5'. If everything is fine, a success message should be printed!
+  </p>
+  <p>
+   Through this PW you will update the script with given snippets and code you will develop. New snippets often use outputs from previous ones. Nevertheless, do not hesitate to clean regularily the script to avoid your console and display to be flooded. Block comment shortcut : 'Ctrl + 4', Block uncomment shortcut : 'Ctrl + 5'.
   </p>
   <ol>
    <li>
@@ -181,8 +200,8 @@ print('Im2 ==&gt; Shape: {} / Mean: {} / Std: {} / Min: {} / Max: {}'.format(im1
     </p>
     <pre><code># Save the patches
 makedirs('data/out', exist_ok=True)
-imsave('data/out/crop_1.jpg', crop_1)
-imsave('data/out/crop_2.jpg', crop_2)
+imsave('data/out/im1.jpg', im1)
+imsave('data/out/im2.jpg', im2)
 
 # Display the images
 plt.subplot(2,1,1)
@@ -193,6 +212,11 @@ plt.title('Image 2')
 plt.imshow(im2)
 plt.show()
 </code></pre>
+    <p>
+     <em>
+      Check that the images have well been saved in './data/out/'
+     </em>
+    </p>
    </li>
    <li>
     <p>
@@ -215,6 +239,11 @@ rota270 = hflip.transpose(1, 0, 2)
 stride4 = im1[0:-1:4, 0:-1:4, :]
 stride8 = im1[0:-1:8, 0:-1:8, :]
 </code></pre>
+    <p>
+     <em>
+      Print/display the resulting shapes and images to understand the commands.
+     </em>
+    </p>
    </li>
    <li>
     <p>
@@ -228,13 +257,18 @@ print('Grayscale image shape:', im1_gray.shape)
 vgrad = im1_gray[0:-2, :] - im1_gray[1:-1, :]
 hgrad = im1_gray[:, 0:-2] - im1_gray[:, 1:-1]
 </code></pre>
+    <p>
+     <em>
+      Print/display the resulting shapes and images to understand the commands.
+     </em>
+    </p>
    </li>
   </ol>
   <h2>
-   2. Synthetic Noising and Quality Assessement
+   2. Synthetic Image Noising and Quality Assessement
   </h2>
   <p>
-   In this section you will experience synthetic image noising and quality assessment. For that end the scikit-image python package is used.
+   In this section you will experience synthetic image noising and quality assessment. For that end, the scikit-image python package is used.
   </p>
   <ol>
    <li>
@@ -253,6 +287,9 @@ noise_map = np.random.normal(0., sigma_float,  im1_gray.shape)
 # Add noise to image
 im_noise = im1_gray + noise_map
 
+# Avoid values out of the [0.,1.] range
+im_noise = np.clip(im_noise, 0., 1.)
+
 # Display the value histogram of the noise map, the original and noisy images
 vec_noise = np.reshape(noise_map, noise_map.size)  # Vectorize noise_map
 plt.subplot(2,2,1)
@@ -266,9 +303,9 @@ plt.show()
    </li>
    <li>
     <p>
-     Use a library to do the same noising in one line:
+     Use a library to do the same noising with only one line:
     </p>
-    <pre><code>im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=False)
+    <pre><code>im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=True)
 </code></pre>
     <ul>
      <li>
@@ -348,28 +385,28 @@ print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
 
 # Filter loop function
 def filter_loop(noisy_image, kernel, padding_type='zeros'):
-height, width = noisy_image.shape
-kernel_size = kernel.shape[0]
+    height, width = noisy_image.shape
+    kernel_size = kernel.shape[0]
 
-# Initialize the output array
-output = np.zeros(noisy_image.shape)
+    # Initialize the output array
+    output = np.zeros(noisy_image.shape)
 
-# Generate padding
-padding_size = int(kernel_size/2)
+    # Generate padding
+    padding_size = int(kernel_size/2)
 
-if padding_type is 'zeros':
-    padded_input = np.zeros((height + 2 * padding_size, width + 2 * padding_size))
-elif padding_type is 'ones':
-    padded_input = np.ones((height + 2 * padding_size, width + 2 * padding_size))
+    if padding_type is 'zeros':
+        padded_input = np.zeros((height + 2 * padding_size, width + 2 * padding_size))
+    elif padding_type is 'ones':
+        padded_input = np.ones((height + 2 * padding_size, width + 2 * padding_size))
 
-padded_input[padding_size:padding_size+height, padding_size:padding_size+width] = noisy_image
+    padded_input[padding_size:padding_size+height, padding_size:padding_size+width] = noisy_image
 
-# Loop over the image
-for i in range(0, height):
-    for j in range(0, width):
+    # Loop over the image
+    for i in range(0, height):
+        for j in range(0, width):
         output[i, j] = np.sum(np.multiply(kernel, padded_input[i:i+kernel_size, j:j+kernel_size]))
 
-return output
+    return output
 
 # Use function to mean filter
 hand_denoised = filter_loop(im_noise_lib, np.ones((3, 3)) / 9.)
@@ -387,79 +424,91 @@ print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
 
   # Filter
   def mean_filter(input, kernel_size):
-kernel = np.ones((kernel_size, kernel_size))
-output = 1 / np.square(kernel_size) * convolve(input, kernel)
-return output
+    kernel = np.ones((kernel_size, kernel_size))
+    output = 1 / np.square(kernel_size) * convolve(input, kernel)
+    return output
   mean_denoised = mean_filter(im_noise_lib, 3)
 
   # Measure denoised PSNR/SSIM
   print_psnr_ssim(gauss_denoised, im1_gray, 'Approximate Gaussian Denoised')
 </code></pre>
+    <p>
+     <em>
+      Try different filter kernel sizes.
+     </em>
+    </p>
    </li>
    <li>
     <p>
      Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
+     <br/>
+     <em>
+      In your opinion, which one gives the better denoising (objectively and subjectively)?
+     </em>
     </p>
    </li>
    <li>
     <p>
      Low Pass Transform Denoising
     </p>
-    <pre><code>  # Transform the image and shift the result
-  fft_clean = fftshift(fft2(im1_gray))
-  fft_noisy = fftshift(fft2(im_noise_lib))
-
-  shape = fft_noisy.shape
-  middle_y, middle_x = int((shape[0] + 1.)/2.), int((shape[1]+1.)/2.)
-
-  # Keep only a part of the coefficients
-  percentage_keep = 0.2
-  fft_thresh = fft_noisy.copy()  # init an output image
-  fft_thresh[:, :] = 0.  # Set to 0. +0.j
-  half_y_keep = int(((int(percentage_keep * shape[0]))+1)/2.)  # Compute the size of the window to keep
-  half_x_keep = int(((int(percentage_keep * shape[1]))+1)/2.)
-  fft_thresh[middle_y - half_y_keep: middle_y + half_y_keep, middle_x - half_x_keep: middle_x + half_x_keep] = \
-  fft_noisy[middle_y - half_y_keep: middle_y + half_y_keep, middle_x - half_x_keep: middle_x + half_x_keep]
-
-  # Inverse transform
-  im_denoised = ifft2(ifftshift(fft_thresh)).real
-  im_denoised = np.clip(im_denoised, 0., 1.)  # Ensure the values stay in [0., 1.]
-
-  print_psnr_ssim(im_denoised, im1_gray, 'Denoised')
-
-  # Display
-if True:
-    plt.subplot(3, 2, 1)
-    plt.imshow(im1_gray, cmap='gray')
-    plt.title('Clean Image')
-
-  plt.subplot(3, 2, 2)
-  plt.imshow(np.abs(fft_clean), norm=LogNorm())
-  plt.title('Clean Spectrum')
-  plt.colorbar()
-
-  plt.subplot(3, 2, 3)
-  plt.imshow(im_noise_lib, cmap='gray')
-  plt.title('Noisy Image')
-
-  plt.subplot(3, 2, 4)
-  plt.imshow(np.abs(fft_noisy), norm=LogNorm())
-  plt.title('Noisy Spectrum')
-  plt.colorbar()
-
-  plt.subplot(3, 2, 5)
-  plt.imshow(im_denoised, cmap='gray')
-  plt.title('Denoised Image')
-
-  plt.subplot(3, 2, 6)
-  plt.imshow(np.abs(fft_thresh), norm=LogNorm(vmin=0.1))
-  plt.title('Denoised Spectrum')
-  plt.colorbar()
-
-  plt.show()
-</code></pre>
    </li>
   </ol>
+  <h1>
+   Transform the image and shift the result
+  </h1>
+  <pre><code>    fft_clean = fftshift(fft2(im1_gray))
+    fft_noisy = fftshift(fft2(im_noise_lib))
+
+    shape = fft_noisy.shape
+    middle_y, middle_x = int((shape[0] + 1.)/2.), int((shape[1]+1.)/2.)
+
+
+    # Keep only a part of the coefficients
+    percentage_keep = 0.2
+    fft_thresh = fft_noisy.copy()  # init an output image
+    fft_thresh[:, :] = 0.  # Set to 0. +0.j
+    half_y_keep = int(((int(percentage_keep * shape[0]))+1)/2.)  # Compute the size of the window to keep
+    half_x_keep = int(((int(percentage_keep * shape[1]))+1)/2.)
+    fft_thresh[middle_y - half_y_keep: middle_y + half_y_keep, middle_x - half_x_keep: middle_x + half_x_keep] = \
+      fft_noisy[middle_y - half_y_keep: middle_y + half_y_keep, middle_x - half_x_keep: middle_x + half_x_keep]
+
+    # Inverse transform
+    im_denoised = ifft2(ifftshift(fft_thresh)).real
+    im_denoised = np.clip(im_denoised, 0., 1.)  # Ensure the values stay in [0., 1.]
+
+    print_psnr_ssim(im_denoised, im1_gray, 'Denoised')
+
+    # Display
+    if True:
+        plt.subplot(3, 2, 1)
+        plt.imshow(im1_gray, cmap='gray')
+        plt.title('Clean Image')
+
+        plt.subplot(3, 2, 2)
+        plt.imshow(np.abs(fft_clean), norm=LogNorm())
+        plt.title('Clean Spectrum')
+        plt.colorbar()
+
+        plt.subplot(3, 2, 3)
+        plt.imshow(im_noise_lib, cmap='gray')
+        plt.title('Noisy Image')
+
+        plt.subplot(3, 2, 4)
+        plt.imshow(np.abs(fft_noisy), norm=LogNorm())
+        plt.title('Noisy Spectrum')
+        plt.colorbar()
+
+        plt.subplot(3, 2, 5)
+        plt.imshow(im_denoised, cmap='gray')
+        plt.title('Denoised Image')
+
+        plt.subplot(3, 2, 6)
+        plt.imshow(np.abs(fft_thresh), norm=LogNorm(vmin=0.1))
+        plt.title('Denoised Spectrum')
+        plt.colorbar()
+
+        plt.show()
+</code></pre>
   <p>
    Do you think better denoising can be achieved? Let see in the next practical work what is the state of the art of denoising.
   </p>
