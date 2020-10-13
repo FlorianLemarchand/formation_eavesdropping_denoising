@@ -1,7 +1,9 @@
 # Eavesdropped Image Denoising
 
-
 ## Practical Work 1 -- PW1
+
+Subject --> [PW1.html](./PW1.html) 
+
 ### 1. Image Manipulations
 In this section, you will use some basics code lines to manipulate images.
 
@@ -13,3 +15,4 @@ In this section you will take a step towards denoising. Basic filtering will be 
 
 
 ## Practical Work 2 -- PW2
+Subject -->
