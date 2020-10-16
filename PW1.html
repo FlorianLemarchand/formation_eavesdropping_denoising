@@ -198,6 +198,11 @@ print('Im2 ==&gt; Shape: {} / Mean: {} / Std: {} / Min: {} / Max: {}'.format(im1
       Which dimensions are the height, width and number of channels? Note that this order is not the same for all libraries!
      </em>
     </p>
+    <p>
+     <em>
+      Which of the two images has the highest average luminance? Which of the two images has the highest color deviation?
+     </em>
+    </p>
    </li>
    <li>
     <p>
@@ -216,6 +221,13 @@ plt.subplot(2,1,2)
 plt.title('Image 2')
 plt.imshow(im2)
 plt.show()
+</code></pre>
+    <p>
+     <em>
+      You may change image plotting size by running this code before the preceding commands:
+     </em>
+    </p>
+    <pre><code>plt.figure(figsize=(15,15))
 </code></pre>
     <p>
      <em>
