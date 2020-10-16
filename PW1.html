@@ -166,7 +166,7 @@
    Now, you can open the script 'pw1.py' and start editing it. The run shortcut is 'F5'. Be sure to select the 'Python Console' tab on right bottom of the IDE before pressing 'F5' to run. If everything is fine, a success message should be printed!
   </p>
   <p>
-   Through this PW you will update the script with given snippets and code you will develop. New snippets often use outputs from previous ones. Nevertheless, do not hesitate to clean regularily the script to avoid your console and display to be flooded. Block comment shortcut : 'Ctrl + 4', Block uncomment shortcut : 'Ctrl + 5'.
+   Through this PW you will update the script with given snippets and code you will develop. New snippets often use outputs from previous ones. Nevertheless, do not hesitate to clean regularily the script to avoid the console and the display to be flooded. Block comment shortcut : 'Ctrl + 4', Block uncomment shortcut : 'Ctrl + 5'.
   </p>
   <ol>
    <li>
@@ -514,6 +514,29 @@ if True:
   <p>
    Do you think better denoising can be achieved? Let see in the next practical work what is the state of the art of denoising.
   </p>
+  <h2>
+   4. Advanced Filtering
+  </h2>
+  <p>
+   In this section, you will experiment an example of advanced filtering. This method, while more efficient, is also more dedicated. You will see that it does not adapt well to noise distributions slightly different from what the method is made for.
+  </p>
+  <ol>
+   <li>
+    <p>
+     Re-use previsous to load 'im1' and noise it with an additive white Gaussian noise (AWGN) with standard deviation 50.
+    </p>
+   </li>
+   <li>
+    <p>
+     Use the 'bm3d' filter to denoise the resulting sample. Be careful as bm3d takes int8 image as input. You can use 'img_as_ubyte' to cast the image. Compare the enhancement obtained with the results of basics filters.
+    </p>
+   </li>
+   <li>
+    <p>
+     Instead of an AWGN, noise 'im1' with a Salt &amp; Pepper distribution. Does it work well?
+    </p>
+   </li>
+  </ol>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
   </script>
   <script>
