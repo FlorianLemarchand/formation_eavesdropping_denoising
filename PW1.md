@@ -116,7 +116,7 @@ Through this PW you will update the script with given snippets and code you will
 
         plt.figure(figsize=(15,15))
 
-	_Check that the images have well been saved in './data/out/'_
+       _Check that the images have well been saved in './data/out/'._
         
       
    4. Play with Python indexing to manipulate images and display them:
@@ -156,7 +156,7 @@ In this section you will experience synthetic image noising and quality assessme
 
    1. Generate a map of white Gaussian noise with standard deviation 50. Display its distribution through an histogram. Add the noise to im1. 
        
-        sigma = 50
+        sigma = 100
         # Cast the image and parameters to float : each value coded on 64-bit float with value in [0,1]
         im1_gray = img_as_float(im1_gray)      
         sigma_float = sigma/255.
@@ -181,14 +181,14 @@ In this section you will experience synthetic image noising and quality assessme
         plt.imshow(im_noise, cmap='gray')
         plt.show()
       
-   2. Use the previous method to display the histograms of im1 and im2
+   2. Add a display of the noise. Use the previous methods to display the histograms of im1 and of noised im1. What can we say about these histograms? You may remove the extreme pixel values from the noised image histogram plot. Also draw the gradients of noised im1 and its distribution. What can we say about these histograms?
         
    3. Use a library to do the same noising with only one line:
    
         im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=True)
        * _Display 'im_noise_lib' and its histogram._ 
        
-   4. Quality assessment of the noisy image:
+   4. Quality assessment of the noisy image. You can create the following functions, inspiring from the given _print\_psnr\_ssim_ function:
    
 		# Measure the quality of the noisy images with respect to the clean image
 		psnr = compare_psnr(im_noise, im1_gray)
@@ -227,7 +227,7 @@ In this section you will experience synthetic image noising and quality assessme
    
 ## 3. Denoising using basic filtering
 
-In this section you will take a step towards denoising. Basic filtering will be used and the quality measured and observed to highlight the limits of such basic processings. 
+In this section you will take a step towards denoising. Basic low-pass filtering will be used and the quality measured and observed to highlight the limits of such basic processings. 
    
    1. Filtering Framework
 
