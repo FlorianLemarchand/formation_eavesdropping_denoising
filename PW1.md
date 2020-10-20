@@ -94,6 +94,8 @@ Through this PW you will update the script with given snippets and code you will
 
        _Which dimensions are the height, width and number of channels? Note that this order is not the same for all libraries!_
 
+       _Which of the two images has the highest average luminance? Which of the two images has the highest color deviation?_
+
    3. Save/Display the images:
     
         # Save the patches
@@ -110,7 +112,11 @@ Through this PW you will update the script with given snippets and code you will
         plt.imshow(im2)
         plt.show()   
         
-	_Check that the images have well been saved in './data/out/'_
+   You may change image plotting size by running this code before the preceding commands:
+
+        plt.figure(figsize=(15,15))
+
+       _Check that the images have well been saved in './data/out/'._
         
       
    4. Play with Python indexing to manipulate images and display them:
@@ -143,14 +149,14 @@ Through this PW you will update the script with given snippets and code you will
         vgrad = im1_gray[0:-2, :] - im1_gray[1:-1, :]
         hgrad = im1_gray[:, 0:-2] - im1_gray[:, 1:-1]
 	_Print/display the resulting shapes and images to understand the commands._ 
-	
+
 ## 2. Synthetic Image Noising and Quality Assessement
 
 In this section you will experience synthetic image noising and quality assessment. For that end, the scikit-image python package is used.
 
    1. Generate a map of white Gaussian noise with standard deviation 50. Display its distribution through an histogram. Add the noise to im1. 
        
-        sigma = 50
+        sigma = 100
         # Cast the image and parameters to float : each value coded on 64-bit float with value in [0,1]
         im1_gray = img_as_float(im1_gray)      
         sigma_float = sigma/255.
@@ -175,12 +181,14 @@ In this section you will experience synthetic image noising and quality assessme
         plt.imshow(im_noise, cmap='gray')
         plt.show()
       
-   2. Use a library to do the same noising with only one line:
+   2. Add a display of the noise. Use the previous methods to display the histograms of im1 and of noised im1. What can we say about these histograms? You may remove the extreme pixel values from the noised image histogram plot. Also draw the gradients of noised im1 and its distribution. What can we say about these histograms?
+        
+   3. Use a library to do the same noising with only one line:
    
         im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=True)
        * _Display 'im_noise_lib' and its histogram._ 
        
-   3. Quality assessment of the noisy image:
+   4. Quality assessment of the noisy image. You can create the following functions, inspiring from the given _print\_psnr\_ssim_ function:
    
 		# Measure the quality of the noisy images with respect to the clean image
 		psnr = compare_psnr(im_noise, im1_gray)
@@ -188,7 +196,7 @@ In this section you will experience synthetic image noising and quality assessme
 		ssim = compare_ssim(im_noise, im1_gray)
 		print('im_noise: PSNR: {} / MSE: {} / SSIM: {}'.format(psnr, mse, ssim))
        
-   4. Display different intensities of noise applied to im1:
+   5. Display different intensities of noise applied to im1:
        
         # Noise im1 with different sigmas       
         sigmas = range(20, 161, 20)        
@@ -213,13 +221,13 @@ In this section you will experience synthetic image noising and quality assessme
         
         plt.show()
       
-   4. Try other noise types in the 'random_noise' function [(Documentation)](https://scikit-image.org/docs/0.13.x/api/skimage.util.html#skimage.util.random_noise). Measure the resulting PSNR and SSIM.
+   6. Try other noise types in the 'random_noise' function [(Documentation)](https://scikit-image.org/docs/0.13.x/api/skimage.util.html#skimage.util.random_noise). Measure the resulting PSNR and SSIM.
    
-   5. Apply sequentially two different noise types and measure the metrics. 
+   7. Apply sequentially two different noise types and measure the metrics. 
    
 ## 3. Denoising using basic filtering
 
-In this section you will take a step towards denoising. Basic filtering will be used and the quality measured and observed to highlight the limits of such basic processings. 
+In this section you will take a step towards denoising. Basic low-pass filtering will be used and the quality measured and observed to highlight the limits of such basic processings. 
    
    1. Filtering Framework
 
