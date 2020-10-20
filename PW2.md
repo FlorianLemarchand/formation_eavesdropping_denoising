@@ -28,4 +28,11 @@ _Call
 _Complete the function 'data_augmentation' in 'utils_PW2.py' with horizontal, vertical flip and 90° rotation._
 
 2. Define the architecture of the neural network:
-To begin you will use a pre-defined 
+To begin you will use a pre-defined architecture.
+
+		# Define the architecture
+		n_channels = 1  # 1 for grayscale, 3 for RGB
+		model = DnCNN(channels=n_channels, num_of_layers=17)
+		
+		# Display the architecture
+		summary(model, (1, 64, 64), device='cpu')

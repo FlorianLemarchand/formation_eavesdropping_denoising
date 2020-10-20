@@ -111,16 +111,18 @@ def make_learning_set():
 
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, input_dir, target_dir):
+    def __init__(self, input_dir, target_dir, test=False):
         self.input_dir = input_dir
         self.target_dir = target_dir
         self.input_paths = listdir(input_dir)
+        self.test = test
 
     def __getitem__(self, index):
         x = img_as_float32(imread(path.join(self.input_dir, self.input_paths[index]), as_gray=True))
         y = img_as_float32(imread(path.join(self.target_dir, self.input_paths[index]), as_gray=True))
 
-        x, y = data_augmentation(x, y)
+        if not self.test:
+            x, y = data_augmentation(x, y)
 
         x = np.expand_dims(x, axis=0)
         y = np.expand_dims(y, axis=0)
@@ -205,3 +207,39 @@ class Logger:
 
     def export_json(self, out_file):
         self.writer.export_scalars_to_json(out_file)
+
+
+def ensemble_inference(model, im_tens):
+    transforms = [im_tens,
+                  im_tens.transpose(-2, -1).flip(-1),
+                  im_tens.transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1),
+                  im_tens.transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1),
+                  im_tens.flip(-1),
+                  im_tens.flip(-1).transpose(-2, -1).flip(-1),
+                  im_tens.flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1),
+                  im_tens.flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1)]
+
+
+    out = []
+
+    for tens in transforms:
+        out.append(model(tens)[0])
+
+
+    transforms_back = torch.cat((out[0].unsqueeze(dim=0),
+                                 out[1].flip(-1).transpose(-2, -1).unsqueeze(dim=0),
+                                 out[2].flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).unsqueeze(dim=0),
+                                 out[3].flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1).transpose(-2,
+                                                                                                                 -1).unsqueeze(
+                                     dim=0),
+                                 out[4].flip(-1).unsqueeze(dim=0),
+                                 out[5].flip(-1).transpose(-2, -1).flip(-1).unsqueeze(dim=0),
+                                 out[6].flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1).unsqueeze(dim=0),
+                                 out[7].flip(-1).transpose(-2, -1).flip(-1).transpose(-2, -1).flip(-1).transpose(-2,
+                                                                                                                 -1).flip(
+                                     -1).unsqueeze(dim=0)
+                                 ), dim=0)
+
+    ensemble_out = torch.mean(transforms_back, dim=0)
+    ensemble_out_uns = ensemble_out.unsqueeze(dim=0)
+    return ensemble_out_uns
