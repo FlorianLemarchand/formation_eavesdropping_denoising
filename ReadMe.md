@@ -19,8 +19,6 @@ In this section, you will experiment an example of advanced filtering. This meth
 ## Practical Work 2 -- PW2 -- State of the Art Methods for Denoising and Application to Eavesdropped Image Interpretation
 Subject --> [PW2.html](./PW2.html) 
 
-### 1. Advanced Filtering
+### 1. Prototyping a Learning-Based Denoising Method
 
-### 2. Learning-Based Denoising
-
-### 3. Application to Eavesdropping Interpretation
+### 2. Application to Eavesdropping Interpretation

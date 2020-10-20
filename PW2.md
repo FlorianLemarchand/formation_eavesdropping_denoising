@@ -14,41 +14,18 @@ Re-use the 'FCMR40' virtual machine and the setup as is at the end of PW1.
 
 
 
-## 2. Learning-Based Denoising
+## 1. Learning-Based Denoising
 In this section, you will experience the prototyping of a learning-based denoiser. You will sucessively prepare the data, define the architecture of the neural network, define the optimization process, define the evaluation scheme at training time, launch the training and test the obtained model. As the available hardware is not powerful enough for the computation intensive training, you will check that your process runs well and prematurely stop the process. pre-trained model will be given for testing. 
 
-1. Randomly split the dataset in train/val/test sets. 
+1. Randomly split the dataset in train/val/test sets. Each subset contains a folder 'ref' that contains the clean samples and a folder 'in' that contains the noisy ones.  
+_Complete and call the function 'make_learning_set' from 'utils_PW2.py'. You need to write the synthetic noising of an image with an AWGN with sigma 50._
 
-		# List the files contained in the data directory
-		filenames = listdir('data/in/bsd')
-		print('Directory contains {} images!'.format(len(filenames)))
-
-		# Shuffle the array of filenames to ensure random distribution into sets
-		np.random.shuffle(filenames)
-
-		# Separate in three sets
-		train_ratio = 0.8
-		n_train = int(len(filenames) * train_ratio)
-		n_val = int((len(filenames) - n_train) /2)
-
-		train_filenames = filenames[0:n_train]
-		val_filenames = filenames[n_train: n_train + n_val]
-		test_filenames = filenames[n_train + n_val: n_train + 2 * n_val]
-
-		print('{} train samples, {} train samples, {} train samples'.format(len(train_filenames),
-				                                                    len(val_filenames),
-				                                                    len(test_filenames)))
-
-		# Create directories
-		makedirs('data/out/bsd_learning/train/ref', exist_ok=True)
-		makedirs('data/out/bsd_learning/val/ref', exist_ok=True)
-		makedirs('data/out/bsd_learning/test/ref', exist_ok=True)
-
-		for i, set in enumerate(['train', 'val', 'test']):
-		    for f in [train_filenames, val_filenames, test_filenames][i]:
-			input_path = path.join('data/in/bsd', f)
-			output_path = path.join('data/out/bsd_learning', set, 'ref', f)
-			# print(input_path, output_path)
-			copyfile(input_path, output_path)
 			
-2. 
+3. Define the image generators that will feed the neural network with the previsouly prepared data. 
+_Call 
+
+2. Prepare a supervised learning dataset for the denoising problem using noising.
+_Complete the function 'data_augmentation' in 'utils_PW2.py' with horizontal, vertical flip and 90° rotation._
+
+2. Define the architecture of the neural network:
+To begin you will use a pre-defined 

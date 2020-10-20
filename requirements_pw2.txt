@@ -4,3 +4,7 @@ torch
 pybm3d
 scikit-image
 pillow
+torchsummary
+tensorboardX
+torchvision
+tensorboard
