@@ -1,7 +1,6 @@
 numpy
 matplotlib
 torch
-pybm3d
 scikit-image
 pillow
 torchsummary
