@@ -61,15 +61,15 @@ summary(model, (1, 64, 64), device=device)
 mse_loss = torch.nn.MSELoss()
 
 # Define the optimizer
-opt = torch.optim.Adam(model.parameters(), lr=0.0001)
-scheduler = torch.optim.lr_scheduler.StepLR(opt, 100, 0.1)
+opt = torch.optim.Adam(model.parameters(), lr=0.1)
+scheduler = torch.optim.lr_scheduler.ExponentialLR(opt, 0.96)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
 tensorboard = Logger(log_dir)
 
 # Training Loop
-n_epochs = 1000
+n_epochs = 200
 best_val_loss = 1
 for epoch in range(n_epochs):
     for it, (noisy_batch, target_batch) in enumerate(train_generator):
