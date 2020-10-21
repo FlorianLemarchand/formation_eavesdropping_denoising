@@ -61,8 +61,8 @@ summary(model, (1, 64, 64), device=device)
 mse_loss = torch.nn.MSELoss()
 
 # Define the optimizer
-opt = torch.optim.Adam(model.parameters(), lr=0.1)
-scheduler = torch.optim.lr_scheduler.ExponentialLR(opt, 0.96)
+opt = torch.optim.Adam(model.parameters(), lr=0.01)
+scheduler = torch.optim.lr_scheduler.ExponentialLR(opt, 0.98)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
