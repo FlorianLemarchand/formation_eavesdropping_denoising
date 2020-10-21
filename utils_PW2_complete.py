@@ -47,12 +47,43 @@ class DnCNN(nn.Module):
         return out
 
 
+class REDNet10(nn.Module):
+    def __init__(self, num_layers=5, num_features=64):
+        super(REDNet10, self).__init__()
+        conv_layers = []
+        deconv_layers = []
+
+        conv_layers.append(nn.Sequential(nn.Conv2d(1, num_features, kernel_size=3, stride=2, padding=1),
+                                         nn.ReLU(inplace=True)))
+        for i in range(num_layers - 1):
+            conv_layers.append(nn.Sequential(nn.Conv2d(num_features, num_features, kernel_size=3, padding=1),
+                                             nn.ReLU(inplace=True)))
+
+        for i in range(num_layers - 1):
+            deconv_layers.append(nn.Sequential(nn.ConvTranspose2d(num_features, num_features, kernel_size=3, padding=1),
+                                               nn.ReLU(inplace=True)))
+        deconv_layers.append(nn.ConvTranspose2d(num_features, 1, kernel_size=3, stride=2, padding=1, output_padding=1))
+
+        self.conv_layers = nn.Sequential(*conv_layers)
+        self.deconv_layers = nn.Sequential(*deconv_layers)
+        self.relu = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        residual = x
+        out = self.conv_layers(x)
+        out = self.deconv_layers(out)
+        out += residual
+        out = self.relu(out)
+        return out
+
+
 def make_learning_set():
     # List the files contained in the data directory
     filenames = listdir('data/in/bsd')
     print('Directory contains {} images!'.format(len(filenames)))
 
     # Shuffle the array of filenames to ensure random distribution into sets
+    np.random.seed(0)
     np.random.shuffle(filenames)
 
     # Separate in three sets
@@ -105,9 +136,9 @@ def make_learning_set():
                 patch_and_save(im_noise, output_path_in, 64)
 
             else:
-
                 imsave(output_path_ref, im_ref)
                 imsave(output_path_in, im_noise)
+
 
 
 class CustomDataset(torch.utils.data.Dataset):
