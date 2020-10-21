@@ -61,15 +61,15 @@ summary(model, (1, 64, 64), device=device)
 mse_loss = torch.nn.MSELoss()
 
 # Define the optimizer
-opt = torch.optim.Adam(model.parameters(), lr=0.01)
-scheduler = torch.optim.lr_scheduler.ExponentialLR(opt, 0.98)
+opt = torch.optim.Adam(model.parameters(), lr=0.001)
+scheduler = torch.optim.lr_scheduler.StepLR(opt, 500, 0.1)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
 tensorboard = Logger(log_dir)
 
 # Training Loop
-n_epochs = 200
+n_epochs = 2000
 best_val_loss = 1
 for epoch in range(n_epochs):
     for it, (noisy_batch, target_batch) in enumerate(train_generator):
@@ -151,7 +151,7 @@ for epoch in range(n_epochs):
 
 # with torch.no_grad():
 #     # Load model
-#     saved_model_path = '/home/flemarch/Documents/Florian/THESE/ENSEIGNEMENT/2020-2021/formation_supelec/TP/formation_eavesdropping_denoising/logs/20_10_2020_14_41_4/best_model.pth'
+#     saved_model_path = '/home/flemarch/Documents/Florian/THESE/ENSEIGNEMENT/2020-2021/formation_supelec/TP/formation_eavesdropping_denoising/logs/21_10_2020_11_30_39/best_model.pth'
 #     checkpoint = torch.load(saved_model_path)
 #     model.load_state_dict(checkpoint)
 #     tensorboard = Logger(path.split(saved_model_path)[0])
