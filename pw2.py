@@ -64,8 +64,8 @@ mse_loss = torch.nn.MSELoss()
 # opt = torch.optim.Adam(model.parameters(), lr=0.001)
 # scheduler = torch.optim.lr_scheduler.StepLR(opt, 500, 0.1)
 
-opt = torch.optim.Adam(model.parameters(), lr=0.0001)
-# scheduler = torch.optim.lr_scheduler.StepLR(opt, 500, 0.1)
+opt = torch.optim.Adam(model.parameters(), lr=0.001)
+scheduler = torch.optim.lr_scheduler.StepLR(opt, 600, 0.1)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
@@ -148,7 +148,7 @@ for epoch in range(n_epochs):
             torch.save(model.state_dict(), path.join(log_dir, 'best_model.pth'))
             print("\tNew best model saved!")
 
-    # scheduler.step()
+    scheduler.step()
 
 # TEST CODE
 
