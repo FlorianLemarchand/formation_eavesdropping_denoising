@@ -126,6 +126,9 @@ def make_learning_set():
             # Save the image
             ####### END TO DO PW2 #######
 
+            # Change extension
+            name, ext = f.split('.')
+            f = name + '.png'
             output_path_ref = path.join('data/out/bsd_learning', subset, 'ref', f)
             output_path_in = path.join('data/out/bsd_learning', subset, 'in', f)
 
