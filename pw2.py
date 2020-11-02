@@ -65,7 +65,7 @@ mse_loss = torch.nn.MSELoss()
 # scheduler = torch.optim.lr_scheduler.StepLR(opt, 500, 0.1)
 
 opt = torch.optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(opt, 150, 0.1)
+scheduler = torch.optim.lr_scheduler.StepLR(opt, 250, 0.1)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
