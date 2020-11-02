@@ -134,13 +134,16 @@ def make_learning_set():
 
             im_ref = img_as_ubyte(im_ref)
 
-            if subset is not 'test':
-                patch_and_save(im_ref, output_path_ref, 64)
-                patch_and_save(im_noise, output_path_in, 64)
+            patch_and_save(im_ref, output_path_ref, 321)
+            patch_and_save(im_noise, output_path_in, 321)
 
-            else:
-                imsave(output_path_ref, im_ref)
-                imsave(output_path_in, im_noise)
+            # if subset is not 'test':
+            #     patch_and_save(im_ref, output_path_ref, 64)
+            #     patch_and_save(im_noise, output_path_in, 64)
+            #
+            # else:
+            #     imsave(output_path_ref, im_ref)
+            #     imsave(output_path_in, im_noise)
 
 
 
@@ -163,6 +166,7 @@ class CustomDataset(torch.utils.data.Dataset):
 
         x = torch.from_numpy(x.copy())
         y = torch.from_numpy(y.copy())
+
 
         return x, y
 

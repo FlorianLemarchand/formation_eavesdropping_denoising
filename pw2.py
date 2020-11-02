@@ -31,7 +31,7 @@ def print_line_break():
 # ========= Write your code hereunder =========
 # make_learning_set()
 
-batch_size = 128
+batch_size = 8
 
 train_dataset = CustomDataset('data/out/bsd_learning/train/in', 'data/out/bsd_learning/train/ref')
 train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
@@ -65,7 +65,7 @@ mse_loss = torch.nn.MSELoss()
 # scheduler = torch.optim.lr_scheduler.StepLR(opt, 500, 0.1)
 
 opt = torch.optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(opt, 600, 0.1)
+scheduler = torch.optim.lr_scheduler.StepLR(opt, 150, 0.1)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
@@ -154,7 +154,7 @@ for epoch in range(n_epochs):
 
 # with torch.no_grad():
 #     # Load model
-#     saved_model_path = '/home/flemarch/Documents/Florian/THESE/ENSEIGNEMENT/2020-2021/formation_supelec/TP/formation_eavesdropping_denoising/logs/21_10_2020_13_58_30/best_model.pth'
+#     saved_model_path = '/home/flemarch/Documents/Florian/THESE/ENSEIGNEMENT/2020-2021/formation_supelec/TP/formation_eavesdropping_denoising/logs/2_11_2020_9_50_50/best_model.pth'
 #     checkpoint = torch.load(saved_model_path)
 #     model.load_state_dict(checkpoint)
 #     tensorboard = Logger(path.split(saved_model_path)[0])
@@ -169,7 +169,11 @@ for epoch in range(n_epochs):
 #         # Forward propagation of inputs
 #         # test_denoised_batch = ensemble_inference(model, test_noisy_batch)
 #         test_denoised_batch = model(test_noisy_batch)
+#         test_denoised_batch = test_denoised_batch.clamp(0.,1.)
 #
+#         print('test_noisy_batch:', test_noisy_batch.mean().item(), test_noisy_batch.min().item(), test_noisy_batch.max().item(), test_noisy_batch.dtype)
+#         print('test_target_batch:', test_target_batch.mean().item(), test_target_batch.min().item(), test_target_batch.max().item(), test_target_batch.dtype)
+#         print('test_denoised_batch:', test_denoised_batch.mean().item(), test_denoised_batch.min().item(), test_denoised_batch.max().item(), test_denoised_batch.dtype)
 #
 #         # Compute loss
 #         test_mse = mse_loss(test_denoised_batch, test_target_batch)
