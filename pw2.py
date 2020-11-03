@@ -36,8 +36,8 @@ batch_size = 8
 train_dataset = CustomDataset('data/out/bsd_learning/train/in', 'data/out/bsd_learning/train/ref')
 train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
 
-val_dataset = CustomDataset('data/out/bsd_learning/val/in', 'data/out/bsd_learning/val/ref')
-val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
+val_dataset = CustomDataset('data/out/bsd_learning/val/in', 'data/out/bsd_learning/val/ref', test=True)
+val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
 test_dataset = CustomDataset('data/out/bsd_learning/test/in', 'data/out/bsd_learning/test/ref', test=True)
 test_generator = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=False)
@@ -68,14 +68,14 @@ mse_loss = torch.nn.MSELoss()
 # scheduler = torch.optim.lr_scheduler.StepLR(opt, 500, 0.1)
 
 opt = torch.optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(opt, 50, 0.1)
+scheduler = torch.optim.lr_scheduler.StepLR(opt, 100, 0.1)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
 tensorboard = Logger(log_dir)
 
 # Training Loop
-n_epochs = 200
+n_epochs = 400
 best_val_loss = 1
 for epoch in range(n_epochs):
     for it, (noisy_batch, target_batch) in enumerate(train_generator):
@@ -157,7 +157,7 @@ for epoch in range(n_epochs):
 
 # with torch.no_grad():
 #     # Load model
-#     saved_model_path = '/home/flemarch/Documents/Florian/THESE/ENSEIGNEMENT/2020-2021/formation_supelec/TP/formation_eavesdropping_denoising/logs/3_11_2020_15_47_17/best_model.pth'
+#     saved_model_path = '/home/flemarch/Downloads/pc-eii114/3_11_2020_16_6_15/best_model.pth'
 #     checkpoint = torch.load(saved_model_path)
 #     model.load_state_dict(checkpoint)
 #     tensorboard = Logger(path.split(saved_model_path)[0])
