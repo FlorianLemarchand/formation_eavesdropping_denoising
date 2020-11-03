@@ -15,7 +15,7 @@ from skimage.metrics import peak_signal_noise_ratio, \
     structural_similarity
 
 from utils_PW2_complete import DnCNN, CustomDataset, make_learning_set, generate_logdir, Logger, ensemble_inference, REDNet10
-
+from mwcnn import MWCNN
 
 # ========= Utils =========
 def print_psnr_ssim(im1, im2, label):
@@ -44,7 +44,10 @@ test_generator = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle
 
 # Define the architecture
 n_channels = 1  # 1 for grayscale, 3 for RGB
-model = DnCNN(channels=n_channels, num_of_layers=17)
+model = MWCNN(n_channels=1)
+
+# model = DnCNN(channels=n_channels, num_of_layers=17)
+
 # model = REDNet10()
 
 # Move model to GPU memory is available
@@ -55,7 +58,7 @@ if torch.cuda.is_available():
     device = 'cuda'
 
 # Display the architecture
-summary(model, (1, 64, 64), device=device)
+summary(model, (1, 320, 320), device=device)
 
 # Define the loss function
 mse_loss = torch.nn.MSELoss()
@@ -65,14 +68,14 @@ mse_loss = torch.nn.MSELoss()
 # scheduler = torch.optim.lr_scheduler.StepLR(opt, 500, 0.1)
 
 opt = torch.optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(opt, 250, 0.1)
+scheduler = torch.optim.lr_scheduler.StepLR(opt, 50, 0.1)
 # Set log directory
 log_dir = generate_logdir('./logs')
 print('Log directory is: {}'.format(log_dir))
 tensorboard = Logger(log_dir)
 
 # Training Loop
-n_epochs = 2000
+n_epochs = 200
 best_val_loss = 1
 for epoch in range(n_epochs):
     for it, (noisy_batch, target_batch) in enumerate(train_generator):
@@ -154,7 +157,7 @@ for epoch in range(n_epochs):
 
 # with torch.no_grad():
 #     # Load model
-#     saved_model_path = '/home/flemarch/Documents/Florian/THESE/ENSEIGNEMENT/2020-2021/formation_supelec/TP/formation_eavesdropping_denoising/logs/2_11_2020_9_50_50/best_model.pth'
+#     saved_model_path = '/home/flemarch/Documents/Florian/THESE/ENSEIGNEMENT/2020-2021/formation_supelec/TP/formation_eavesdropping_denoising/logs/3_11_2020_15_47_17/best_model.pth'
 #     checkpoint = torch.load(saved_model_path)
 #     model.load_state_dict(checkpoint)
 #     tensorboard = Logger(path.split(saved_model_path)[0])

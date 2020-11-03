@@ -134,8 +134,8 @@ def make_learning_set():
 
             im_ref = img_as_ubyte(im_ref)
 
-            patch_and_save(im_ref, output_path_ref, 321)
-            patch_and_save(im_noise, output_path_in, 321)
+            patch_and_save(im_ref, output_path_ref, 320)
+            patch_and_save(im_noise, output_path_in, 320)
 
             # if subset is not 'test':
             #     patch_and_save(im_ref, output_path_ref, 64)
