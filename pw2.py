@@ -151,13 +151,13 @@ for epoch in range(n_epochs):
             torch.save(model.state_dict(), path.join(log_dir, 'best_model.pth'))
             print("\tNew best model saved!")
 
-    scheduler.step()
+    # scheduler.step()
 
 # TEST CODE
 
 # with torch.no_grad():
 #     # Load model
-#     saved_model_path = '/home/flemarch/Downloads/pc-eii114/3_11_2020_16_6_15/best_model.pth'
+#     saved_model_path = '/home/flemarch/Downloads/pc-eii114/3_11_2020_17_55_50/best_model.pth'
 #     checkpoint = torch.load(saved_model_path)
 #     model.load_state_dict(checkpoint)
 #     tensorboard = Logger(path.split(saved_model_path)[0])
