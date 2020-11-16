@@ -192,6 +192,65 @@ class IWT(nn.Module):
         return iwt_init(x)
 
 
+class GCA(nn.Module):
+    def __init__(self, input_shape, in_feats=64, feats=64, kernel_size=3, out_feats=64, n_channels=3):
+        super(GCA, self).__init__()
+
+        convs_g = [nn.Conv2d(in_feats, feats, kernel_size, 2, 1),
+                   nn.ReLU(True),
+                   nn.Conv2d(feats, feats, kernel_size, 2, 1),
+                   nn.ReLU(True)]
+        self.convs_g = nn.Sequential(*convs_g)
+
+        conv_l = [nn.Conv2d(in_feats, feats, kernel_size, 1, 1),
+                  nn.ReLU(True)]
+        self.conv_l = nn.Sequential(*conv_l)
+
+        convOut = [nn.Conv2d(feats, out_feats, kernel_size, 1, 1),
+                   nn.ReLU(True)]
+        self.convOut = nn.Sequential(*convOut)
+
+        print(input_shape)
+        n_points = int(feats * input_shape[0]/4 * input_shape[1] / 4 /4)
+        print(n_points)
+
+        self.pool = nn.AvgPool2d(2)
+
+        fcs = [nn.Linear(n_points, 4 * out_feats),
+               nn.ReLU(True),
+               nn.Linear(4 * out_feats, 2 * out_feats),
+               nn.ReLU(True),
+               nn.Linear(2 * out_feats, out_feats)]
+        self.fcs = nn.Sequential(*fcs)
+
+    def forward(self, x):
+        print("input:", x.shape)
+        glob_ = self.convs_g(x)
+        print("glob_:", glob_.shape)
+        # glob = self.pool(_glob)
+        # print("glob:", glob.shape)
+        glob_ = self.pool(glob_)
+        glob = glob_.view(glob_.shape[0], -1)
+        print("glob:", glob.shape)
+
+        fes = self.fcs(glob)
+        print("fes:", fes.shape)
+        # print(fes[0,0].mean().item())
+
+        loc = self.conv_l(x)
+        print("loc:", loc.shape)
+        # print(loc[0,0,:,:].mean().item())
+        mul = (loc.view(loc.shape[0] * loc.shape[1], -1) * fes.view(fes.shape[0] * fes.shape[1], -1)).view(loc.shape)
+        print("mul:", mul.shape)
+        # print(mul[0,0,:,:].mean().item())
+        # print(fes[0,0].mean().item() * loc[0,0,:,:].mean().item())
+
+        out = self.convOut(mul)
+
+        return out
+
+
+
 class MWCNN(nn.Module):
     """Pytorch implementation of MWCNN [1]_.
 
@@ -226,6 +285,8 @@ class MWCNN(nn.Module):
 
         self.DWT = DWT()
         self.IWT = IWT()
+
+        self.GCA = GCA((320, 320))
 
         m_head = [BBlock(conv, nColor, n_feats, kernel_size, act=act)]
         d_l0 = []
@@ -265,6 +326,7 @@ class MWCNN(nn.Module):
 
     def forward(self, x):
         x0 = self.d_l0(self.head(x))
+        GCA_x0 = self.GCA(x0)
         x1 = self.d_l1(self.DWT(x0))
         x2 = self.d_l2(self.DWT(x1))
         x_ = self.IWT(self.pro_l3(self.DWT(x2))) + x2
