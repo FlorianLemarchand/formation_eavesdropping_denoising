@@ -39,8 +39,8 @@ train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_si
 val_dataset = CustomDataset('data/out/bsd_learning/val/in', 'data/out/bsd_learning/val/ref', test=True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-test_dataset = CustomDataset('data/out/bsd_learning/test/in', 'data/out/bsd_learning/test/ref', test=True)
-test_generator = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=False)
+# test_dataset = CustomDataset('data/out/bsd_learning/test/in', 'data/out/bsd_learning/test/ref', test=True)
+# test_generator = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=False)
 
 # Define the architecture
 n_channels = 1  # 1 for grayscale, 3 for RGB
