@@ -326,8 +326,8 @@ class MWCNN(nn.Module):
 
     def forward(self, x):
         x0 = self.d_l0(self.head(x))
-        GCA_x0 = self.GCA(x0)
-        x1 = self.d_l1(self.DWT(GCA_x0))
+        # GCA_x0 = self.GCA(x0)
+        x1 = self.d_l1(self.DWT(x0))
         x2 = self.d_l2(self.DWT(x1))
         x_ = self.IWT(self.pro_l3(self.DWT(x2))) + x2
         x_ = self.IWT(self.i_l2(x_)) + x1
