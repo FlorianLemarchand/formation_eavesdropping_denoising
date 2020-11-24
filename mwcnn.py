@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 
-def default_conv(in_channels, out_channels, kernel_size, bias=True, dilation=1):
+def default_conv(in_channels, out_channels, kernel_size, bias=False, dilation=1):
     return nn.Conv2d(
         in_channels, out_channels, kernel_size,
         padding=(kernel_size // 2) + dilation - 1, bias=bias, dilation=dilation)
