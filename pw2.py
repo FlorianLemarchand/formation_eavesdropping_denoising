@@ -31,7 +31,7 @@ def print_line_break():
 # ========= Write your code hereunder =========
 # make_learning_set()
 
-batch_size = 8
+batch_size = 16
 
 train_dataset = CustomDataset('data/out/bsd_learning/train/in', 'data/out/bsd_learning/train/ref')
 train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
@@ -39,7 +39,8 @@ train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_si
 val_dataset = CustomDataset('data/out/bsd_learning/val/in', 'data/out/bsd_learning/val/ref', test=True)
 val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-# test_dataset = CustomDataset('data/out/bsd_learning/test/in', 'data/out/bsd_learning/test/ref', test=True)
+# test_dataset = CustomDataset('/media/flemarch/LEMAR_500GO/datasets/natural_interception/491_cut_320_inverted_all/val/in',
+#                              '/media/flemarch/LEMAR_500GO/datasets/natural_interception/491_cut_320_inverted_all/val/ref', test=True)
 # test_generator = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=False)
 
 # Define the architecture
@@ -75,7 +76,7 @@ print('Log directory is: {}'.format(log_dir))
 tensorboard = Logger(log_dir)
 
 # Training Loop
-n_epochs = 400
+n_epochs = 2000
 best_val_loss = 1
 for epoch in range(n_epochs):
     for it, (noisy_batch, target_batch) in enumerate(train_generator):
@@ -157,7 +158,7 @@ for epoch in range(n_epochs):
 
 # with torch.no_grad():
 #     # Load model
-#     saved_model_path = '/home/flemarch/Downloads/pc-eii114/3_11_2020_17_55_50/best_model.pth'
+#     saved_model_path = '/home/flemarch/Downloads/pc-eii115/best_model.pth'
 #     checkpoint = torch.load(saved_model_path)
 #     model.load_state_dict(checkpoint)
 #     tensorboard = Logger(path.split(saved_model_path)[0])
