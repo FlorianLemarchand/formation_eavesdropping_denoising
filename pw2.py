@@ -15,7 +15,7 @@ from skimage.metrics import peak_signal_noise_ratio, \
     structural_similarity
 
 from utils_PW2_complete import DnCNN, CustomDataset, make_learning_set, generate_logdir, Logger, ensemble_inference, REDNet10
-from mwcnn import MWCNN
+from mwcnn import MWCNN, aug_MWCNN
 
 # ========= Utils =========
 def print_psnr_ssim(im1, im2, label):
@@ -31,7 +31,7 @@ def print_line_break():
 # ========= Write your code hereunder =========
 # make_learning_set()
 
-batch_size = 16
+batch_size = 8
 
 train_dataset = CustomDataset('data/out/bsd_learning/train/in', 'data/out/bsd_learning/train/ref')
 train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
@@ -45,7 +45,7 @@ val_generator = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, 
 
 # Define the architecture
 n_channels = 1  # 1 for grayscale, 3 for RGB
-model = MWCNN(n_channels=1)
+model = aug_MWCNN(n_channels=1)
 
 # model = DnCNN(channels=n_channels, num_of_layers=17)
 
