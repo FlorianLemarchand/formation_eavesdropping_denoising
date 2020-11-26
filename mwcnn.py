@@ -9,7 +9,7 @@ def default_conv(in_channels, out_channels, kernel_size, bias=False, dilation=1)
 
 
 def aug_conv(in_channels, out_channels, kernel_size, bias=False, dilation=1):
-    return AugmentedConv(in_channels, out_channels, kernel_size, dk=2, dv=2, Nh=2, relative=False, stride=1, shape=16)
+    return AugmentedConv(in_channels, out_channels, kernel_size, dk=4, dv=4, Nh=4, relative=False, stride=1, shape=16)
 
 
 def default_conv1(in_channels, out_channels, kernel_size, bias=True, groups=3):
