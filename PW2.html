@@ -1,0 +1,546 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Made with Remarkable!
+  </title>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/github.min.css" rel="stylesheet"/>
+  <style type="text/css">
+   body,table tr{background-color:#fff}table tr td,table tr th{border:1px solid #ccc;text-align:left;padding:6px 13px;margin:0}pre code,table,table tr{padding:0}hr,pre code{background:0 0}body{font:16px Helvetica,Arial,sans-serif;line-height:1.4;color:#333;word-wrap:break-word;padding:10px 15px}strong,table tr th{font-weight:700}h1{font-size:2em;margin:.67em 0;text-align:center}h2{font-size:1.75em}h3{font-size:1.5em}h4{font-size:1.25em}h1,h2,h3,h4,h5,h6{font-weight:700;position:relative;margin-top:15px;margin-bottom:15px;line-height:1.1}h1,h2{border-bottom:1px solid #eee}hr{height:0;margin:15px 0;overflow:hidden;border:0;border-bottom:1px solid #ddd}a{color:#4183C4}a.absent{color:#c00}ol,ul{padding-left:15px;margin-left:5px}ol{list-style-type:lower-roman}table tr{border-top:1px solid #ccc;margin:0}table tr:nth-child(2n){background-color:#aaa}table tr td :first-child,table tr th :first-child{margin-top:0}table tr td:last-child,table tr th :last-child{margin-bottom:0}img{max-width:100%}blockquote{padding:0 15px;border-left:4px solid #ccc}code,tt{margin:0 2px;padding:0 5px;white-space:nowrap;border:1px solid #eaeaea;background-color:#f8f8f8;border-radius:3px}pre code{margin:0;white-space:pre;border:none}.highlight pre,pre{background-color:#f8f8f8;border:1px solid #ccc;font-size:13px;line-height:19px;overflow:auto;padding:6px 10px;border-radius:3px}
+  </style>
+ </head>
+ <body>
+  <h1>
+   Practical Work 2: Learning-Based Methods for Denoising and Application to Eavesdropped Image Enhancement
+  </h1>
+  <h2>
+   Install
+  </h2>
+  <p>
+   Re-use the
+   <em>
+    FCMR40
+   </em>
+   virtual machine and the setup as is at the end of PW1.
+  </p>
+  <ol>
+   <li>
+    <p>
+     Uninstall the packages of PW1:
+    </p>
+    <pre><code>pip3 uninstall -r requirements_pw1.txt
+</code></pre>
+   </li>
+   <li>
+    <p>
+     Install the packages for PW2:
+    </p>
+    <pre><code>pip3 install -r requirements_pw2.txt
+</code></pre>
+   </li>
+  </ol>
+  <h2>
+   I. Prototyping a Learning-Based Denoising Method
+  </h2>
+  <p>
+   In this section, you will experience the prototyping of supervised learning-based denoisers. You will sucessively prepare the data, define the architecture of the neural network, define the optimization process, define the evaluation scheme at training time, launch the training and test the obtained model.
+  </p>
+  <p>
+   As the available hardware is not powerful enough for the computation intensive training, you will check that your process runs well and prematurely stop the process. Pre-trained model will be given for testing.
+  </p>
+  <p>
+   <strong>
+    To avoid multiple duplicates of code, a 'question_solver' utility is used. Just fill the variable 'question' according to the number of the question your are working on to enable the related code parts.
+   </strong>
+  </p>
+  <h4>
+   1. Learning Dataset
+  </h4>
+  <p>
+   The dataset has to be randomly split in training, validation and testing sets. Each subset contains a folder 'ref' that contains the reference samples and a folder 'in' that contains their noisy counterpart.
+  </p>
+  <ul>
+   <li>
+    <p>
+     Set
+     <em>
+      question=1
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Complete the function
+     <em>
+      make_learning_set
+     </em>
+     from
+     <em>
+      utils_PW2.py
+     </em>
+     . You need to write the synthetic noising of an image with an AWGN with sigma 100.
+    </p>
+   </li>
+   <li>
+    <p>
+     Run
+     <em>
+      pw2.py
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Have a look at the obtained dataset in 'data/out/bsd_learning'
+    </p>
+   </li>
+  </ul>
+  <h4>
+   2. Data Generators
+  </h4>
+  <p>
+   During the training phase, data generators are responsible for feeding the model with pairs of corresponding noisy/clean images. Data generators have to be efficient to avoid being the bottleneck of the training loop.
+  </p>
+  <ul>
+   <li>
+    <p>
+     Set
+     <em>
+      question=2
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Complete the function
+     <em>
+      data_augmentation
+     </em>
+     from
+     <em>
+      utils_PW2.py
+     </em>
+     . You have to program different transformations applied to input images. These transformations increase the variability of input samples during the training so that the model learns better.
+    </p>
+   </li>
+   <li>
+    <p>
+     Run
+     <em>
+      pw2.py
+     </em>
+     . A batch from training and validation should be displayed. Check that the augmentation worked correctly.
+    </p>
+   </li>
+  </ul>
+  <h4>
+   3. Model and Optimization Process
+  </h4>
+  <p>
+   Here are defined the parameters of the model architecture, and those of the optimization process.
+  </p>
+  <ul>
+   <li>
+    <p>
+     Here, the CNN architecture is
+     <em>
+      DnCNN
+     </em>
+     , for grayscale images (
+     <em>
+      n_channels=1
+     </em>
+     ), composed of 17 layers (
+     <em>
+      num_of_layers=17
+     </em>
+     ).
+    </p>
+   </li>
+   <li>
+    <p>
+     The loss function is the MSE (Mean Square Error).
+    </p>
+   </li>
+   <li>
+    <p>
+     The optimizer is
+     <em>
+      Adam
+     </em>
+     with default parameters and learning rate 0.001 (
+     <em>
+      lr=0.001
+     </em>
+     ).
+    </p>
+   </li>
+   <li>
+    <p>
+     The training is set to last 2000 epochs. An epoch is most of the time defined as the training over all the image pairs of the dataset.
+    </p>
+   </li>
+   <li>
+    <p>
+     Set
+     <em>
+      question=3
+     </em>
+    </p>
+   </li>
+   <li>
+    Run
+    <em>
+     pw2.py
+    </em>
+    . The architecture of the model is displayed on the console as well as useful information like the number of parameters it contains.
+   </li>
+  </ul>
+  <h4>
+   4. Training Loop
+  </h4>
+  <p>
+   The training loops over the entiere dataset
+   <em>
+    n_epochs
+   </em>
+   times. The dataset is divided in batches of images. Each batch is forward passed through the model. The loss is computed between the output of the model and the reference batch. The loss is then backward passed through the model. An optimization step is done.
+   <br/>
+   At the end of an epoch, the validation set is passed through the current model and the loss is computed to check that the model generalizes well on unseen data. Also, the score on validation set drives the selection of the best model to be saved.
+  </p>
+  <p>
+   Different metrics are logged during training and validation so that it can be monitored. An unique log directory is created and its location displayed on the console.
+  </p>
+  <ul>
+   <li>
+    <p>
+     Set
+     <em>
+      question=4
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Run
+     <em>
+      pw2.py
+     </em>
+     . Check that everything goes well. As explained before, the learning is really slow, stop it and you will use pre-trained models.
+    </p>
+   </li>
+   <li>
+    <p>
+     Pre-trained logs and models have been placed in 'logs'. To display the logs, open a terminal from this directory. Connect to the virtual environnement and run:
+    </p>
+    <pre><code>tensorboard --logdir='.'
+</code></pre>
+   </li>
+   <li>
+    <p>
+     For now, look at
+     <em>
+      dncnn_sigma50
+     </em>
+     and
+     <em>
+      dncnn_sigma100
+     </em>
+     that are trained for denoising AWGN of sigma 50 and 100 respectively.
+    </p>
+   </li>
+  </ul>
+  <h4>
+   5. Testing
+  </h4>
+  <p>
+   Now that you have trained models, you need to evaluate them on unseen data.
+  </p>
+  <ul>
+   <li>
+    <p>
+     Set
+     <em>
+      question=5
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Run
+     <em>
+      pw2.py
+     </em>
+     . The testing is ran, metrics are displayed for each image as well as the averages values on the test set. Keep trace of the average metrics as we will use them later on. Noisy/denoised/reference image triplets are stored in
+     <em>
+      data/out/out_dncnn
+     </em>
+     .
+    </p>
+   </li>
+  </ul>
+  <h2>
+   II. Towards Eavesdropped Data Enhancement
+  </h2>
+  <p>
+   You saw on part I how to design a denoiser for AWGN noise. You will now do the same for an eavesdropping dataset. You will compare the results with those obtained using the basic filtering techniques of PW1.
+  </p>
+  <h4>
+   6. Eavesdropped Images Enhancement
+  </h4>
+  <p>
+   The model and training parameters are almost the same as those of AWGN part. The only difference is the data used to train the model. As earlier, a pre-trained model is used for testing. The data to be used is in
+   <em>
+    data/in/intercept
+   </em>
+   .
+  </p>
+  <ul>
+   <li>
+    <p>
+     Set
+     <em>
+      question=6
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Have a look at
+     <em>
+      make_learning_set_intercept
+     </em>
+     as it differs from previous code. The noisy images are not anymore generated from references since their are real-world samples.
+    </p>
+   </li>
+   <li>
+    <p>
+     Run
+     <em>
+      pw2.py
+     </em>
+     . Have a look and keep trace of the average metrics. How does it perform in PSNR compared to AWGN( Question 5)? Look at the resulting images in
+     <em>
+      data/out/out_dncnn17_intercept
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Change the model to DnCNN with 20 layers. You need to change
+     <em>
+      output_dir
+     </em>
+     ,
+     <em>
+      saved_model_path
+     </em>
+     and the parameters of the DnCNN model. Run
+     <em>
+      pw2.py
+     </em>
+     and compare the results with the model with 17 layers. You can do that comparison with the pre-trained
+     <em>
+      RedNet30
+     </em>
+     available in
+     <em>
+      logs/natural_intercept_rednet30
+     </em>
+     . If you have time, you can also test the model trained for AWGN on the eavedropped samples.
+    </p>
+   </li>
+   <li>
+    <p>
+     Training logs and weights of a DnCNN model that has been trained without data augmentation is available at
+     <em>
+      logs/natural_intercept_dncnn_20_no_augmentation
+     </em>
+     . You can check the tensorboard display of the logs and observe what is overfitting.
+    </p>
+   </li>
+  </ul>
+  <h4>
+   7. Comparison Table with Basic and Advanced Filtering Denoising
+  </h4>
+  <p>
+   During PW1 and PW2, you have implemented and used different denoising techniques. As the computation is long on the available hardware, here is a comparison table of the PSNR obtained using the different methods you have used during the PWs.
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th align="center">
+      Dataset/Algorithm
+     </th>
+     <th align="center">
+      No Filtering
+     </th>
+     <th align="center">
+      Mean Filter 3x3
+     </th>
+     <th align="center">
+      Mean Filter 5x5
+     </th>
+     <th align="center">
+      Median Filter 5x5
+     </th>
+     <th align="center">
+      FFT + Thresholding
+     </th>
+     <th align="center">
+      BM3D  Sigma 50
+     </th>
+     <th align="center">
+      DnCNN17
+     </th>
+     <th align="center">
+      DnCNN20
+     </th>
+     <th align="center">
+      DnCNN20 No  Augmentation
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td align="center">
+      Eavesdropped
+     </td>
+     <td align="center">
+      10.37
+     </td>
+     <td align="center">
+      10.89
+     </td>
+     <td align="center">
+      10.93
+     </td>
+     <td align="center">
+      10.83
+     </td>
+     <td align="center">
+      10.91
+     </td>
+     <td align="center">
+      10.99
+     </td>
+     <td align="center">
+      14.39
+     </td>
+     <td align="center">
+      16.49
+     </td>
+     <td align="center">
+      11.31
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Some comparison images are available at
+   <em>
+    data/out/comparison_methods
+   </em>
+   . The images are arranged as follows:
+  </p>
+  <table>
+   <thead>
+    <tr>
+     <th align="center">
+      Noisy
+     </th>
+     <th align="center">
+      Mean 3x3
+     </th>
+     <th align="center">
+      Mean 5x5
+     </th>
+     <th align="center">
+      Median 5x5
+     </th>
+     <th align="center">
+      FFT + Threshold
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td align="center">
+      Reference
+     </td>
+     <td align="center">
+      BM3D
+     </td>
+     <td align="center">
+      DnCNN17
+     </td>
+     <td align="center">
+      DnCNN20
+     </td>
+     <td align="center">
+      DnCNN20 No Data Augmentation
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h4>
+   8. Optional: Inference Optimization
+  </h4>
+  <p>
+   Ensemble inference is the idea of averaging different transformed versions of a noisy image passed through a model to enhance the results.
+  </p>
+  <p>
+   First the input image is transform using invertible transforms like rotations or flips. The transformed images are passed through the model. The filtered transformed images are transformed back to their original configuration and the result of the ensemble inference is the average of all the transformed back images.
+  </p>
+  <p>
+   The underlying idea is that each part of the network is not trained the same and passing transforms enables the resulting average image to benefit from the strenghs of all parts of the network.
+  </p>
+  <ul>
+   <li>
+    <p>
+     Set
+     <em>
+      question=8
+     </em>
+     .
+    </p>
+   </li>
+   <li>
+    <p>
+     Have a look at the
+     <em>
+      ensemble_inference
+     </em>
+     function and its usage in the code corresponding to question 8.
+    </p>
+   </li>
+   <li>
+    <p>
+     Run
+     <em>
+      pw2.py
+     </em>
+     . The performance enhancement obtained is not very large compared to the computation increase (several images to pass through the model). But still, it is an improvement!
+    </p>
+   </li>
+  </ul>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
+  </script>
+  <script>
+   hljs.initHighlightingOnLoad();
+  </script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   MathJax.Hub.Config({"showProcessingMessages" : false,"messageStyle" : "none","tex2jax": { inlineMath: [ [ "$", "$" ] ] }});
+  </script>
+ </body>
+</html>
