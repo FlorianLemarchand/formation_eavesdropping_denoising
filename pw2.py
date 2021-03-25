@@ -25,9 +25,13 @@ if question_solver(question, 2):
     # Define the batch_size, the number of samples to be fed to the network before the evaluation of the loss function
     batch_size = 8
 
+    # Get number of available threads
+    num_threads = torch.multiprocessing.cpu_count()
+
     # Train datagenerator
     train_dataset = CustomDataset('data/out/bsd_learning/train/in', 'data/out/bsd_learning/train/ref')
-    train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
+    train_generator = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
+                                                  shuffle=True, num_workers=num_threads)
 
     # Validation datagenerator
     val_dataset = CustomDataset('data/out/bsd_learning/val/in', 'data/out/bsd_learning/val/ref', is_test=True)
@@ -111,17 +115,16 @@ if question_solver(question, 4):
             opt.step()
 
             # Log train
-            if it % 20 is 0:
-                current_iteration = epoch * len(train_dataset) + it * batch_size
-                # Display the loss and PSNR over the training batch
-                print("Train || Epoch:{}, Iter:{} || MSE:{} || PNSR: {}".format(epoch,
-                                                                                it * batch_size,
-                                                                                np.round(loss.item(), 4),
-                                                                                np.round(psnr, 4)))
+            current_iteration = epoch * len(train_dataset) + it * batch_size
+            # Display the loss and PSNR over the training batch
+            print("Train || Epoch:{}, Iter:{} || MSE:{} || PNSR: {}".format(epoch,
+                                                                            it * batch_size,
+                                                                            np.round(loss.item(), 4),
+                                                                            np.round(psnr, 4)))
 
-                # Log to tensorboard
-                tensorboard.add_scalar('Train/MSE', loss.item(), current_iteration)
-                tensorboard.add_scalar('Train/PSNR', psnr, current_iteration)
+            # Log to tensorboard
+            tensorboard.add_scalar('Train/MSE', loss.item(), current_iteration)
+            tensorboard.add_scalar('Train/PSNR', psnr, current_iteration)
 
         # Log val
         with torch.no_grad():
