@@ -1,82 +1,186 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
-<head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<style type="text/css">
-td, th { border: 1px solid #c3c3c3; padding: 0 3px 0 3px; }
-table { border-collapse: collapse; }
-img { max-width: 100%; }
-</style>
-<meta name="generator" content="ReText 7.1.0">
-<title>PW1</title>
-<style type="text/css">
-</style>
-</head>
-<body>
-<h1>Practical Work 1: Basics of Image Processing and Denoising</h1>
-<h2>Install</h2>
-<ol>
-<li>
-<p>Open 'FCMR40' virtual machine using VirtualBox. Password: fcmr40 </p>
-</li>
-<li>
-<p>Get the code repository</p>
-<p>Open a terminal:
-Ctrl + Alt + T</p>
-<p><code>cd ~/Desktop</code></p>
-<p><code>git clone https://github.com/FlorianLemarchand/formation_eavesdropping_denoising.git</code></p>
-<p>The digital version of this practical work guidance is available at the repository root ('PW1.html'). Digital version will be useful to copy paste snippets of code.</p>
-</li>
-<li>
-<p>A little update and new installs:</p>
-<p><code>sudo sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list</code></p>
-<p><code>sudo apt-get update &amp;&amp; sudo apt-get dist-upgrade</code>
-This command can be long (few minutes). You can read the following of the subject during that time.</p>
-<p><code>sudo apt install virtualenv</code></p>
-<p><code>sudo apt install libtiff-dev</code></p>
-<p><code>sudo apt install spyder3</code></p>
-</li>
-<li>
-<p>Setup the python environment</p>
-<p><code>cd formation_eavesdropping_denoising</code></p>
-<ul>
-<li>Create a virtual environement:</li>
-</ul>
-<p><code>virtualenv -p python3 venv</code></p>
-<ul>
-<li>Connect to this virtual environement:</li>
-</ul>
-<p><code>source venv/bin/activate</code></p>
-<p>The command line should now look like:</p>
-<p><code>(venv) toto:~$</code></p>
-<p>From now, each python package will be installed in this virtual environement. To exit the virtual environement:</p>
-<p><code>deactivate</code></p>
-</li>
-<li>
-<p>Install the required packages:</p>
-<p><code>pip3 install -r requirements_pw1.txt</code></p>
-<ul>
-<li>You can display the installed packages and their versions using:</li>
-</ul>
-<p><code>pip3 list</code></p>
-</li>
-</ol>
-<h2>1. Image Manipulations</h2>
-<p>In this section, you will use some basics code lines to manipulate images.</p>
-<p>For simplicty, use Spyder IDE to write and run the code. You need to tell Spyder to run under the venv. From the console with venv activated, run:</p>
-<p><code>spyder3</code></p>
-<p>When Spyder opens, go to 'Tools --&gt; Preferences --&gt; Python Interpreter', check 'Use the following Python interpreter' and select '/home/fcmr40/Desktop/formation_eavesdropping_denoising/venv/bin/python3'.</p>
-<p>Now, you can open the script 'pw1.py' and start editing it. The run shortcut is 'F5'. Be sure to select the 'Python Console' tab on right bottom of the IDE before pressing 'F5' to run. If everything is fine, a success message should be printed!</p>
-<p>Through this PW you will update the script with given snippets and code you will develop. New snippets often use outputs from previous ones. Nevertheless, do not hesitate to clean regularily the script to avoid the console and the display to be flooded. Block comment shortcut : 'Ctrl + 4', Block uncomment shortcut : 'Ctrl + 5'.</p>
-<ol>
-<li>
-<p>Load images 'im1.jpg' and 'im2.jpg' from 'data' directory.</p>
-<pre><code>im1 = imread('data/in/im1.jpg')
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Made with Remarkable!
+  </title>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/github.min.css" rel="stylesheet"/>
+  <style type="text/css">
+   body,table tr{background-color:#fff}table tr td,table tr th{border:1px solid #ccc;text-align:left;padding:6px 13px;margin:0}pre code,table,table tr{padding:0}hr,pre code{background:0 0}body{font:16px Helvetica,Arial,sans-serif;line-height:1.4;color:#333;word-wrap:break-word;padding:10px 15px}strong,table tr th{font-weight:700}h1{font-size:2em;margin:.67em 0;text-align:center}h2{font-size:1.75em}h3{font-size:1.5em}h4{font-size:1.25em}h1,h2,h3,h4,h5,h6{font-weight:700;position:relative;margin-top:15px;margin-bottom:15px;line-height:1.1}h1,h2{border-bottom:1px solid #eee}hr{height:0;margin:15px 0;overflow:hidden;border:0;border-bottom:1px solid #ddd}a{color:#4183C4}a.absent{color:#c00}ol,ul{padding-left:15px;margin-left:5px}ol{list-style-type:lower-roman}table tr{border-top:1px solid #ccc;margin:0}table tr:nth-child(2n){background-color:#aaa}table tr td :first-child,table tr th :first-child{margin-top:0}table tr td:last-child,table tr th :last-child{margin-bottom:0}img{max-width:100%}blockquote{padding:0 15px;border-left:4px solid #ccc}code,tt{margin:0 2px;padding:0 5px;white-space:nowrap;border:1px solid #eaeaea;background-color:#f8f8f8;border-radius:3px}pre code{margin:0;white-space:pre;border:none}.highlight pre,pre{background-color:#f8f8f8;border:1px solid #ccc;font-size:13px;line-height:19px;overflow:auto;padding:6px 10px;border-radius:3px}
+  </style>
+ </head>
+ <body>
+  <h1>
+   Practical Work 1: Basics of Image Processing and Denoising
+  </h1>
+  <h2>
+   Install
+  </h2>
+  <ol>
+   <li>
+    <p>
+     Open 'FCMR40' virtual machine using VirtualBox. Password: fcmr40
+    </p>
+   </li>
+   <li>
+    <p>
+     Get the code repository
+    </p>
+    <p>
+     Open a terminal:
+     <br/>
+     Ctrl + Alt + T
+    </p>
+    <p>
+     <code>
+      cd ~/Desktop
+     </code>
+    </p>
+    <p>
+     <code>
+      git clone https://github.com/FlorianLemarchand/formation_eavesdropping_denoising.git
+     </code>
+    </p>
+    <p>
+     The digital version of this practical work guidance is available at the repository root ('PW1.html'). Digital version will be useful to copy paste snippets of code.
+    </p>
+   </li>
+   <li>
+    <p>
+     A little update and new installs:
+    </p>
+    <p>
+     <code>
+      sudo sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+     </code>
+    </p>
+    <p>
+     <code>
+      sudo apt-get update &amp;&amp; sudo apt-get dist-upgrade
+     </code>
+     <br/>
+     This command can be long (few minutes). You can read the following of the subject during that time.
+    </p>
+    <p>
+     <code>
+      sudo apt install virtualenv
+     </code>
+    </p>
+    <p>
+     <code>
+      sudo apt install libtiff-dev
+     </code>
+    </p>
+    <p>
+     <code>
+      sudo apt install spyder3
+     </code>
+    </p>
+   </li>
+   <li>
+    <p>
+     Setup the python environment
+    </p>
+    <p>
+     <code>
+      cd formation_eavesdropping_denoising
+     </code>
+    </p>
+    <ul>
+     <li>
+      Create a virtual environement:
+     </li>
+    </ul>
+    <p>
+     <code>
+      virtualenv -p python3 venv
+     </code>
+    </p>
+    <ul>
+     <li>
+      Connect to this virtual environement:
+     </li>
+    </ul>
+    <p>
+     <code>
+      source venv/bin/activate
+     </code>
+    </p>
+    <p>
+     The command line should now look like:
+    </p>
+    <p>
+     <code>
+      (venv) toto:~$
+     </code>
+    </p>
+    <p>
+     From now, each python package will be installed in this virtual environement. To exit the virtual environement:
+    </p>
+    <p>
+     <code>
+      deactivate
+     </code>
+    </p>
+   </li>
+   <li>
+    <p>
+     Install the required packages:
+    </p>
+    <p>
+     <code>
+      pip3 install -r requirements_pw1.txt
+     </code>
+    </p>
+    <ul>
+     <li>
+      You can display the installed packages and their versions using:
+     </li>
+    </ul>
+    <p>
+     <code>
+      pip3 list
+     </code>
+    </p>
+   </li>
+  </ol>
+  <h2>
+   1. Image Manipulations
+  </h2>
+  <p>
+   In this section, you will use some basics code lines to manipulate images.
+  </p>
+  <p>
+   For simplicty, use Spyder IDE to write and run the code. You need to tell Spyder to run under the venv. From the console with venv activated, run:
+  </p>
+  <p>
+   <code>
+    spyder3
+   </code>
+  </p>
+  <p>
+   When Spyder opens, go to 'Tools --&gt; Preferences --&gt; Python Interpreter', check 'Use the following Python interpreter' and select '/home/fcmr40/Desktop/formation_eavesdropping_denoising/venv/bin/python3'.
+  </p>
+  <p>
+   Now, you can open the script 'pw1.py' and start editing it. The run shortcut is 'F5'. Be sure to select the 'Python Console' tab on right bottom of the IDE before pressing 'F5' to run. If everything is fine, a success message should be printed!
+  </p>
+  <p>
+   Through this PW you will update the script with given snippets and code you will develop. New snippets often use outputs from previous ones. Nevertheless, do not hesitate to clean regularily the script to avoid the console and the display to be flooded. Block comment shortcut : 'Ctrl + 4', Block uncomment shortcut : 'Ctrl + 5'.
+  </p>
+  <ol>
+   <li>
+    <p>
+     Load images 'im1.jpg' and 'im2.jpg' from 'data' directory.
+    </p>
+    <pre><code>im1 = imread('data/in/im1.jpg')
 </code></pre>
-</li>
-<li>
-<p>Print their shapes, means, standard deviation (std), mins ans maxs:   </p>
-<pre><code># Print the shapes, means, std, mins, maxs of the images
+   </li>
+   <li>
+    <p>
+     Print their shapes, means, standard deviations (std), mins ans maxs:
+    </p>
+    <pre><code># Print the shapes, means, std, mins, maxs of the images
 print('Im1 ==&gt; Shape: {} / Mean: {} / Std: {} / Min: {} / Max: {}'.format(im1.shape,
                                                                           np.round(np.mean(im1), 2),
                                                                           np.round(np.std(im1), 2),
@@ -89,12 +193,28 @@ print('Im2 ==&gt; Shape: {} / Mean: {} / Std: {} / Min: {} / Max: {}'.format(im1
                                                                           np.min(im2),
                                                                           np.max(im2)))
 </code></pre>
-<p><em>Which dimensions are the height, width and number of channels? Note that this order is not the same for all libraries!</em></p>
-<p><em>Which of the two images has the highest average luminance? Which of the two images has the highest color deviation?</em></p>
-</li>
-<li>
-<p>Save/Display the images:</p>
-<pre><code># Save the patches
+    <ul>
+     <li>
+      <p>
+       <em>
+        Which dimensions are the height, width and number of channels? Note that this order is not the same for all libraries!
+       </em>
+      </p>
+     </li>
+     <li>
+      <p>
+       <em>
+        Which of the two images has the highest average luminance? Which of the two images has the highest color deviation?
+       </em>
+      </p>
+     </li>
+    </ul>
+   </li>
+   <li>
+    <p>
+     Save/Display the images:
+    </p>
+    <pre><code># Save the patches
 makedirs('data/out', exist_ok=True)
 imsave('data/out/im1.jpg', im1)
 imsave('data/out/im2.jpg', im2)
@@ -108,17 +228,24 @@ plt.title('Image 2')
 plt.imshow(im2)
 plt.show()
 </code></pre>
-</li>
-</ol>
-<p>You may change image plotting size by running this code before the preceding commands:</p>
-<pre><code>    plt.figure(figsize=(15,15))
-
-   _Check that the images have well been saved in './data/out/'._
+    <p>
+     You may change image plotting size by running this code before the preceding commands:
+    </p>
+    <pre><code>plt.figure(figsize=(15,15))
 </code></pre>
-<ol>
-<li>
-<p>Play with Python indexing to manipulate images and display them:</p>
-<pre><code># Crop patchs
+    <ul>
+     <li>
+      <em>
+       Check that the images have well been saved in './data/out/'.
+      </em>
+     </li>
+    </ul>
+   </li>
+   <li>
+    <p>
+     Play with Python indexing to manipulate images and display them:
+    </p>
+    <pre><code># Crop patchs
 crop_1 = im1[0:150, 0:150, :]
 crop_2 = im2[0:100, 150:250, :]
 
@@ -135,11 +262,19 @@ rota270 = hflip.transpose(1, 0, 2)
 stride4 = im1[0:-1:4, 0:-1:4, :]
 stride8 = im1[0:-1:8, 0:-1:8, :]
 </code></pre>
-<p><em>Print/display the resulting shapes and images to understand the commands.</em> </p>
-</li>
-<li>
-<p>Compute horizontal and vertical gradients</p>
-<pre><code># Transform to grayscale
+    <ul>
+     <li>
+      <em>
+       Print/display the resulting shapes and images to understand the commands.
+      </em>
+     </li>
+    </ul>
+   </li>
+   <li>
+    <p>
+     Compute horizontal and vertical gradients
+    </p>
+    <pre><code># Transform to grayscale
 im1_gray = rgb2gray(im1)      
 print('Grayscale image shape:', im1_gray.shape)
 
@@ -147,15 +282,27 @@ print('Grayscale image shape:', im1_gray.shape)
 vgrad = im1_gray[0:-2, :] - im1_gray[1:-1, :]
 hgrad = im1_gray[:, 0:-2] - im1_gray[:, 1:-1]
 </code></pre>
-<p><em>Print/display the resulting shapes and images to understand the commands.</em> </p>
-</li>
-</ol>
-<h2>2. Synthetic Image Noising and Quality Assessement</h2>
-<p>In this section you will experience synthetic image noising and quality assessment. For that end, the scikit-image python package is used.</p>
-<ol>
-<li>
-<p>Generate a map of white Gaussian noise with standard deviation 50. Display its distribution through an histogram. Add the noise to im1. </p>
-<pre><code>sigma = 100
+    <ul>
+     <li>
+      <em>
+       Print/display the resulting shapes and images to understand the commands.
+      </em>
+     </li>
+    </ul>
+   </li>
+  </ol>
+  <h2>
+   2. Synthetic Image Noising and Quality Assessement
+  </h2>
+  <p>
+   In this section you will experience synthetic image noising and quality assessment. For that end, the scikit-image python package is used.
+  </p>
+  <ol>
+   <li>
+    <p>
+     Generate a map of white Gaussian noise with standard deviation 100. Display its distribution through an histogram. Add the noise to im1.
+    </p>
+    <pre><code>sigma = 100
 # Cast the image and parameters to float : each value coded on 64-bit float with value in [0,1]
 im1_gray = img_as_float(im1_gray)      
 sigma_float = sigma/255.
@@ -180,30 +327,46 @@ plt.subplot(2,2,3)
 plt.imshow(im_noise, cmap='gray')
 plt.show()
 </code></pre>
-</li>
-<li>
-<p>Add a display of the noise. Use the previous methods to display the histograms of im1 and of noised im1. What can we say about these histograms? You may remove the extreme pixel values from the noised image histogram plot. Also draw the gradients of noised im1 and its distribution. What can we say about these histograms?</p>
-</li>
-<li>
-<p>Use a library to do the same noising with only one line:</p>
-<pre><code>im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=True)
+   </li>
+   <li>
+    <p>
+     Add a display of the noise. Use the previous methods to display the histograms of im1 and of noised im1. What can we say about these histograms? You may remove the extreme pixel values from the noised image histogram plot. Also draw the gradients of noised im1 and its distribution. What can we say about these histograms?
+    </p>
+   </li>
+   <li>
+    <p>
+     Use a library to do the same noising with only one line:
+    </p>
+    <pre><code>im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=True)
 </code></pre>
-<ul>
-<li><em>Display 'im_noise_lib' and its histogram.</em> </li>
-</ul>
-</li>
-<li>
-<p>Quality assessment of the noisy image. You can create the following functions, inspiring from the given <em>print_psnr_ssim</em> function:</p>
-<pre><code># Measure the quality of the noisy images with respect to the clean image
+    <ul>
+     <li>
+      <em>
+       Display 'im_noise_lib' and its histogram.
+      </em>
+     </li>
+    </ul>
+   </li>
+   <li>
+    <p>
+     Quality assessment of the noisy image. Evaluate PSNR, MSE and SSIM metrics of the noisy im1 with respect to its reference. In the following, you can use  the given
+     <em>
+      print_psnr_ssim
+     </em>
+     function:
+    </p>
+    <pre><code># Measure the quality of the noisy images with respect to the clean image
 psnr = compare_psnr(im_noise, im1_gray)
 mse = compare_mse(im_noise, im1_gray)
 ssim = compare_ssim(im_noise, im1_gray)
 print('im_noise: PSNR: {} / MSE: {} / SSIM: {}'.format(psnr, mse, ssim))
 </code></pre>
-</li>
-<li>
-<p>Display different intensities of noise applied to im1:</p>
-<pre><code># Noise im1 with different sigmas       
+   </li>
+   <li>
+    <p>
+     Display different intensities of Gaussian noise applied to im1:
+    </p>
+    <pre><code># Noise im1 with different sigmas       
 sigmas = range(20, 161, 20)        
 ncol = 3
 nrow = int((len(sigmas) + 2) / ncol)
@@ -226,20 +389,34 @@ for i, sigma in enumerate(sigmas):
 
 plt.show()
 </code></pre>
-</li>
-<li>
-<p>Try other noise types in the 'random_noise' function <a href="https://scikit-image.org/docs/0.13.x/api/skimage.util.html#skimage.util.random_noise">(Documentation)</a>. Measure the resulting PSNR and SSIM.</p>
-</li>
-<li>
-<p>Apply sequentially two different noise types and measure the metrics. </p>
-</li>
-</ol>
-<h2>3. Denoising using basic filtering</h2>
-<p>In this section you will take a step towards denoising. Basic low-pass filtering will be used and the quality measured and observed to highlight the limits of such basic processings. </p>
-<ol>
-<li>
-<p>Filtering Framework</p>
-<pre><code># Measure noisy PSNR/SSIM
+   </li>
+   <li>
+    <p>
+     Try other noise types in the 'random_noise' function
+     <a href="https://scikit-image.org/docs/0.13.x/api/skimage.util.html#skimage.util.random_noise">
+      (Documentation)
+     </a>
+     . Measure the resulting PSNR and SSIM.
+    </p>
+   </li>
+   <li>
+    <p>
+     Apply sequentially two different noise types and measure the metrics.
+    </p>
+   </li>
+  </ol>
+  <h2>
+   3. Denoising using basic filtering
+  </h2>
+  <p>
+   In this section you will take a step towards denoising. Basic low-pass filtering will be used and the quality measured and observed to highlight the limits of such basic processings.
+  </p>
+  <ol>
+   <li>
+    <p>
+     Filtering Framework
+    </p>
+    <pre><code># Measure noisy PSNR/SSIM
 print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
 
 # Filter loop function
@@ -273,10 +450,12 @@ hand_denoised = filter_loop(im_noise_lib, np.ones((3, 3)) / 9.)
 # Measure denoised PSNR/SSIM
 print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
 </code></pre>
-</li>
-<li>
-<p>Approximate Gaussian Filtering </p>
-<pre><code>  # Measure noisy PSNR/SSIM
+   </li>
+   <li>
+    <p>
+     Easier Filtering using convolve tool:
+    </p>
+    <pre><code>  # Measure noisy PSNR/SSIM
   print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
 
   # Filter
@@ -287,17 +466,30 @@ print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
   mean_denoised = mean_filter(im_noise_lib, 3)
 
   # Measure denoised PSNR/SSIM
-  print_psnr_ssim(gauss_denoised, im1_gray, 'Approximate Gaussian Denoised')
+  print_psnr_ssim(gauss_denoised, im1_gray, 'Mean Denoised using Convolve')
 </code></pre>
-<p><em>Try different filter kernel sizes.</em> </p>
-</li>
-<li>
-<p>Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
-<em>In your opinion, which one gives the better denoising (objectively and subjectively)?</em></p>
-</li>
-<li>
-<p>Low Pass Transform Denoising</p>
-<pre><code># Transform the image and shift the result
+    <ul>
+     <li>
+      <em>
+       Try different filter kernel sizes.
+      </em>
+     </li>
+    </ul>
+   </li>
+   <li>
+    <p>
+     Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
+     <br/>
+     <em>
+      In your opinion, which one gives the better denoising (objectively and subjectively)?
+     </em>
+    </p>
+   </li>
+   <li>
+    <p>
+     Low Pass Transform Denoising
+    </p>
+    <pre><code># Transform the image and shift the result
 fft_clean = fftshift(fft2(im1_gray))
 fft_noisy = fftshift(fft2(im_noise_lib))
 
@@ -350,21 +542,40 @@ if True:
 
     plt.show()
 </code></pre>
-</li>
-</ol>
-<h2>4. Advanced Filtering</h2>
-<p>In this section, you will experiment an example of advanced filtering. This method, while more efficient, is also more dedicated. You will see that it does not adapt well to noise distributions slightly different from what the method is made for. </p>
-<ol>
-<li>
-<p>Re-use previsous to load 'im1' and noise it with an additive white Gaussian noise (AWGN) with standard deviation 50. </p>
-</li>
-<li>
-<p>Use the 'bm3d' filter to denoise the resulting sample. Be careful as bm3d takes int8 image as input. You can use 'img_as_ubyte' to cast the image. Compare the enhancement obtained with the results of basics filters. </p>
-</li>
-<li>
-<p>Instead of an AWGN, noise 'im1' with a Salt &amp; Pepper distribution. Does it work well? </p>
-</li>
-</ol>
-
-</body>
+   </li>
+  </ol>
+  <h2>
+   4. Advanced Filtering
+  </h2>
+  <p>
+   In this section, you will experiment an example of advanced filtering. This method, while more efficient, is also more dedicated. You will see that it does not adapt well to noise distributions slightly different from what the method is made for.
+  </p>
+  <ol>
+   <li>
+    <p>
+     Re-use previous code to load grayscale 'im1' and synthetically noise it with an additive white Gaussian noise (AWGN) with standard deviation 100.
+    </p>
+   </li>
+   <li>
+    <p>
+     Use the 'bm3d' filter to denoise the resulting sample. Be careful as bm3d takes int8 image as input. You can use 'img_as_ubyte' to cast the image. Compare the enhancement obtained with the results of basics filters.
+    </p>
+   </li>
+   <li>
+    <p>
+     Instead of an AWGN, noise 'im1' with a Salt &amp; Pepper distribution. Does it work well?
+    </p>
+   </li>
+  </ol>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
+  </script>
+  <script>
+   hljs.initHighlightingOnLoad();
+  </script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   MathJax.Hub.Config({"showProcessingMessages" : false,"messageStyle" : "none","tex2jax": { inlineMath: [ [ "$", "$" ] ] }});
+  </script>
+ </body>
 </html>

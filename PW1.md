@@ -77,7 +77,7 @@ Through this PW you will update the script with given snippets and code you will
    
         im1 = imread('data/in/im1.jpg')
    
-   2. Print their shapes, means, standard deviation (std), mins ans maxs:   
+   2. Print their shapes, means, standard deviations (std), mins ans maxs: 
         
         # Print the shapes, means, std, mins, maxs of the images
         print('Im1 ==> Shape: {} / Mean: {} / Std: {} / Min: {} / Max: {}'.format(im1.shape,
@@ -92,9 +92,9 @@ Through this PW you will update the script with given snippets and code you will
                                                                                   np.min(im2),
                                                                                   np.max(im2)))
 
-       _Which dimensions are the height, width and number of channels? Note that this order is not the same for all libraries!_
+      *  _Which dimensions are the height, width and number of channels? Note that this order is not the same for all libraries!_
 
-       _Which of the two images has the highest average luminance? Which of the two images has the highest color deviation?_
+       * _Which of the two images has the highest average luminance? Which of the two images has the highest color deviation?_
 
    3. Save/Display the images:
     
@@ -112,11 +112,11 @@ Through this PW you will update the script with given snippets and code you will
         plt.imshow(im2)
         plt.show()   
         
-   You may change image plotting size by running this code before the preceding commands:
+   	You may change image plotting size by running this code before the preceding commands:
 
         plt.figure(figsize=(15,15))
 
-       _Check that the images have well been saved in './data/out/'._
+   	* _Check that the images have well been saved in './data/out/'._
         
       
    4. Play with Python indexing to manipulate images and display them:
@@ -137,7 +137,7 @@ Through this PW you will update the script with given snippets and code you will
         # Down-Sample the image
         stride4 = im1[0:-1:4, 0:-1:4, :]
         stride8 = im1[0:-1:8, 0:-1:8, :]    
-	_Print/display the resulting shapes and images to understand the commands._ 
+	* _Print/display the resulting shapes and images to understand the commands._ 
           
    5. Compute horizontal and vertical gradients
         
@@ -148,13 +148,14 @@ Through this PW you will update the script with given snippets and code you will
         # Compute horizontal and vertical gradients
         vgrad = im1_gray[0:-2, :] - im1_gray[1:-1, :]
         hgrad = im1_gray[:, 0:-2] - im1_gray[:, 1:-1]
-	_Print/display the resulting shapes and images to understand the commands._ 
+        
+	* _Print/display the resulting shapes and images to understand the commands._ 
 
 ## 2. Synthetic Image Noising and Quality Assessement
 
 In this section you will experience synthetic image noising and quality assessment. For that end, the scikit-image python package is used.
 
-   1. Generate a map of white Gaussian noise with standard deviation 50. Display its distribution through an histogram. Add the noise to im1. 
+1. Generate a map of white Gaussian noise with standard deviation 100. Display its distribution through an histogram. Add the noise to im1. 
        
         sigma = 100
         # Cast the image and parameters to float : each value coded on 64-bit float with value in [0,1]
@@ -181,14 +182,14 @@ In this section you will experience synthetic image noising and quality assessme
         plt.imshow(im_noise, cmap='gray')
         plt.show()
       
-   2. Add a display of the noise. Use the previous methods to display the histograms of im1 and of noised im1. What can we say about these histograms? You may remove the extreme pixel values from the noised image histogram plot. Also draw the gradients of noised im1 and its distribution. What can we say about these histograms?
+ 2. Add a display of the noise. Use the previous methods to display the histograms of im1 and of noised im1. What can we say about these histograms? You may remove the extreme pixel values from the noised image histogram plot. Also draw the gradients of noised im1 and its distribution. What can we say about these histograms?
         
-   3. Use a library to do the same noising with only one line:
+ 3. Use a library to do the same noising with only one line:
    
         im_noise_lib = random_noise(im1_gray, 'gaussian', mean=0., seed=0, var=variance, clip=True)
        * _Display 'im_noise_lib' and its histogram._ 
        
-   4. Quality assessment of the noisy image. You can create the following functions, inspiring from the given _print\_psnr\_ssim_ function:
+   4. Quality assessment of the noisy image. Evaluate PSNR, MSE and SSIM metrics of the noisy im1 with respect to its reference. In the following, you can use  the given _print\_psnr\_ssim_ function:
    
 		# Measure the quality of the noisy images with respect to the clean image
 		psnr = compare_psnr(im_noise, im1_gray)
@@ -196,7 +197,7 @@ In this section you will experience synthetic image noising and quality assessme
 		ssim = compare_ssim(im_noise, im1_gray)
 		print('im_noise: PSNR: {} / MSE: {} / SSIM: {}'.format(psnr, mse, ssim))
        
-   5. Display different intensities of noise applied to im1:
+   5. Display different intensities of Gaussian noise applied to im1:
        
         # Noise im1 with different sigmas       
         sigmas = range(20, 161, 20)        
@@ -266,7 +267,7 @@ In this section you will take a step towards denoising. Basic low-pass filtering
       	print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
       	
    
-   2. Approximate Gaussian Filtering 
+   2. Easier Filtering using convolve tool: 
 
 	      # Measure noisy PSNR/SSIM
 	      print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
@@ -279,8 +280,8 @@ In this section you will take a step towards denoising. Basic low-pass filtering
 	      mean_denoised = mean_filter(im_noise_lib, 3)
 	      
 	      # Measure denoised PSNR/SSIM
-	      print_psnr_ssim(gauss_denoised, im1_gray, 'Approximate Gaussian Denoised')
-_Try different filter kernel sizes._ 
+	      print_psnr_ssim(gauss_denoised, im1_gray, 'Mean Denoised using Convolve')
+* _Try different filter kernel sizes._ 
 	   
 3. Use scipy.ndimage library to try other filters: maximum_filter, minimum_filter, median_filter.
 _In your opinion, which one gives the better denoising (objectively and subjectively)?_
@@ -346,7 +347,7 @@ _In your opinion, which one gives the better denoising (objectively and subjecti
 ## 4. Advanced Filtering
 In this section, you will experiment an example of advanced filtering. This method, while more efficient, is also more dedicated. You will see that it does not adapt well to noise distributions slightly different from what the method is made for. 
 
-1. Re-use previsous to load 'im1' and noise it with an additive white Gaussian noise (AWGN) with standard deviation 50. 
+1. Re-use previous code to load grayscale 'im1' and synthetically noise it with an additive white Gaussian noise (AWGN) with standard deviation 100. 
 	
 2. Use the 'bm3d' filter to denoise the resulting sample. Be careful as bm3d takes int8 image as input. You can use 'img_as_ubyte' to cast the image. Compare the enhancement obtained with the results of basics filters. 
 

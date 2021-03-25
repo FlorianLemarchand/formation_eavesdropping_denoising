@@ -1,6 +1,6 @@
 """
 Authors: Florian Lemarchand, Maxime Pelcat
-Date: 2020
+Date: 2020/2021
 """
 
 # ========= Imports =========
@@ -13,9 +13,7 @@ from skimage.io import imread, imsave
 from scipy.fftpack import fft2, ifft2, fftshift, ifftshift
 from skimage.util import random_noise, img_as_ubyte, img_as_float
 from scipy.ndimage import gaussian_filter, median_filter, convolve
-from skimage.metrics import peak_signal_noise_ratio, \
-    mean_squared_error, \
-    structural_similarity
+from skimage.metrics import peak_signal_noise_ratio, mean_squared_error, structural_similarity
 
 
 # ========= Utils =========
@@ -28,4 +26,4 @@ def print_psnr_ssim(im1, im2, label):
 def print_line_break():
     print('\n')
 
-# ========= Write your code hereunder =========
+# ========= WRITE YOUR CODE HEREUNDER =========
