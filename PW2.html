@@ -3,7 +3,7 @@
  <head>
   <meta charset="utf-8"/>
   <title>
-   Made with Remarkable!
+   PW2 MR40 - Eavesdropped Image Denoising
   </title>
   <link href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/github.min.css" rel="stylesheet"/>
   <style type="text/css">
@@ -44,21 +44,41 @@
    I. Prototyping a Learning-Based Denoising Method
   </h2>
   <p>
-   In this section, you will experience the prototyping of supervised learning-based denoisers. You will sucessively prepare the data, define the architecture of the neural network, define the optimization process, define the evaluation scheme at training time, launch the training and test the obtained model.
+   In this section, you will experience the prototyping of a supervised learning-based denoiser. You will sucessively prepare the data, define the architecture of the neural network, define the optimization process, define the evaluation scheme at training time, launch the training and test the obtained model.
   </p>
   <p>
    As the available hardware is not powerful enough for the computation intensive training, you will check that your process runs well and prematurely stop the process. Pre-trained model will be given for testing.
   </p>
   <p>
    <strong>
-    To avoid multiple duplicates of code, a 'question_solver' utility is used. Just fill the variable 'question' according to the number of the question your are working on to enable the related code parts.
+    To avoid multiple duplicates of code, a
+    <em>
+     question_solver
+    </em>
+    utility is used. Just fill the variable
+    <em>
+     question
+    </em>
+    (line 14 in
+    <em>
+     pw2.py
+    </em>
+    ) according to the number of the question you are working on to enable the related code parts.
    </strong>
   </p>
   <h4>
    1. Learning Dataset
   </h4>
   <p>
-   The dataset has to be randomly split in training, validation and testing sets. Each subset contains a folder 'ref' that contains the reference samples and a folder 'in' that contains their noisy counterpart.
+   The dataset has to be randomly split in training, validation and testing sets. Each subset contains a folder
+   <em>
+    ref
+   </em>
+   that contains the reference samples and a folder
+   <em>
+    in
+   </em>
+   that contains their noisy counterparts.
   </p>
   <ul>
    <li>
@@ -80,7 +100,7 @@
      <em>
       utils_PW2.py
      </em>
-     . You need to write the synthetic noising of an image with an AWGN with sigma 100.
+     . You need to write the synthetic noising of an image with an AWGN with sigma=100.
     </p>
    </li>
    <li>
@@ -124,7 +144,7 @@
      <em>
       utils_PW2.py
      </em>
-     . You have to program different transformations applied to input images. These transformations increase the variability of input samples during the training so that the model learns better.
+     . You have to program different transformations to be applied randomly to input images. These transformations increase the variability of input samples during the training so that the model learns better.
     </p>
    </li>
    <li>
@@ -133,7 +153,7 @@
      <em>
       pw2.py
      </em>
-     . A batch from training and validation should be displayed. Check that the augmentation worked correctly.
+     . A batch from training and validation sets should be displayed. Check that the augmentation worked correctly. You should see rotated and flipped images.
     </p>
    </li>
   </ul>
@@ -141,20 +161,20 @@
    3. Model and Optimization Process
   </h4>
   <p>
-   Here are defined the parameters of the model architecture, and those of the optimization process.
+   Here are defined the parameters of the model architecture and those of the optimization process.
   </p>
   <ul>
    <li>
     <p>
-     Here, the CNN architecture is
+     The chosen CNN architecture is
      <em>
       DnCNN
      </em>
-     , for grayscale images (
+     for grayscale images (
      <em>
       n_channels=1
      </em>
-     ), composed of 17 layers (
+     ) and composed of 17 layers (
      <em>
       num_of_layers=17
      </em>
@@ -163,7 +183,7 @@
    </li>
    <li>
     <p>
-     The loss function is the MSE (Mean Square Error).
+     The loss function is the MSE (Mean Squared Error).
     </p>
    </li>
    <li>
@@ -181,7 +201,7 @@
    </li>
    <li>
     <p>
-     The training is set to last 2000 epochs. An epoch is most of the time defined as the training over all the image pairs of the dataset.
+     The training is set to last 2000 epochs. An epoch is here (and most of the time in the litterature) defined as training over all the image pairs of the dataset.
     </p>
    </li>
    <li>
@@ -240,6 +260,11 @@
     </p>
     <pre><code>tensorboard --logdir='.'
 </code></pre>
+   </li>
+   <li>
+    <p>
+     Open the link printed by the tensorboard command.
+    </p>
    </li>
    <li>
     <p>
