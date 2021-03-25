@@ -13,7 +13,7 @@ Re-use the _FCMR40_ virtual machine and the setup as is at the end of PW1.
 	
 
 
-## I. Learning-Based Denoising
+## I. Prototyping a Learning-Based Denoising Method
 In this section, you will experience the prototyping of supervised learning-based denoisers. You will sucessively prepare the data, define the architecture of the neural network, define the optimization process, define the evaluation scheme at training time, launch the training and test the obtained model. 
 
 As the available hardware is not powerful enough for the computation intensive training, you will check that your process runs well and prematurely stop the process. Pre-trained model will be given for testing. 

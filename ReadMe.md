@@ -13,12 +13,22 @@ In this section you will experience synthetic image noising and quality assessme
 ### 3. Denoising Using Basic Filtering
 In this section you will take a step towards denoising. Basic filtering will be used and the quality measured and observed to highlight the limits of such basic processings. 
 
-## 4. Advanced Filtering
+### 4. Advanced Filtering
 In this section, you will experiment an example of advanced filtering. This method, while more efficient, is also more dedicated. You will see that it does not adapt well to noise distributions slightly different from what the method is made for. 
 
-## Practical Work 2 -- PW2 -- State of the Art Methods for Denoising and Application to Eavesdropped Image Interpretation
+## Practical Work 2 -- PW2 -- Learning-Based Methods for Denoising and Application to Eavesdropped Image Enhancement 
 Subject --> [PW2.html](./PW2.html) 
 
-### 1. Prototyping a Learning-Based Denoising Method
+### I. Prototyping a Learning-Based Denoising Method
+In this section, you will experience the prototyping of a learning based denoiser. The PyTorch Framework is used. To begin with a simple case study, the target is the denoising of an Additive White Gaussian Noise (AWGN) with standard deviation 100. 
+#### 1. Learning Dataset 
+#### 2. Data Generators 
+#### 3. Model and Optimization Process 
+#### 4. Training Loop 
+#### 5. Testing
 
-### 2. Application to Eavesdropping Interpretation
+### II. Towards Eavesdropped Data Enhancement 
+After experiencing the denoising of a synthetic AWGN, you will now target real-world noisy images, namely eavesdropped images.
+#### 6. Eavesdropped Images Enhancement 
+#### 7. Comparison Table with Basic and Advanced Filtering Denoising 
+#### 8. Optional: Inference Optimization 
