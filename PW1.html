@@ -163,7 +163,7 @@
    When Spyder opens, go to 'Tools --&gt; Preferences --&gt; Python Interpreter', check 'Use the following Python interpreter' and select '/home/fcmr40/Desktop/formation_eavesdropping_denoising/venv/bin/python3'.
   </p>
   <p>
-   Now, you can open the script 'pw1.py' and start editing it. The run shortcut is 'F5'. Be sure to select the 'Python Console' tab on right bottom of the IDE before pressing 'F5' to run. If everything is fine, a success message should be printed!
+   Now, you can open the script 'pw1.py' and start editing it. The run shortcut is 'F5'. Be sure to select the 'Python Console' tab on right bottom of the IDE before pressing 'F5' to run. If everything is fine, no error message should be printed!
   </p>
   <p>
    Through this PW you will update the script with given snippets and code you will develop. New snippets often use outputs from previous ones. Nevertheless, do not hesitate to clean regularily the script to avoid the console and the display to be flooded. Block comment shortcut : 'Ctrl + 4', Block uncomment shortcut : 'Ctrl + 5'.
@@ -214,12 +214,13 @@ print('Im2 ==&gt; Shape: {} / Mean: {} / Std: {} / Min: {} / Max: {}'.format(im1
     <p>
      Save/Display the images:
     </p>
-    <pre><code># Save the patches
+    <pre><code># Save the images
 makedirs('data/out', exist_ok=True)
 imsave('data/out/im1.jpg', im1)
 imsave('data/out/im2.jpg', im2)
 
 # Display the images
+plt.figure(figsize=(15,15))
 plt.subplot(2,1,1)
 plt.title('Image 1')
 plt.imshow(im1)
@@ -227,11 +228,6 @@ plt.subplot(2,1,2)
 plt.title('Image 2')
 plt.imshow(im2)
 plt.show()
-</code></pre>
-    <p>
-     You may change image plotting size by running this code before the preceding commands:
-    </p>
-    <pre><code>plt.figure(figsize=(15,15))
 </code></pre>
     <ul>
      <li>
@@ -285,7 +281,7 @@ hgrad = im1_gray[:, 0:-2] - im1_gray[:, 1:-1]
     <ul>
      <li>
       <em>
-       Print/display the resulting shapes and images to understand the commands.
+       Print/display the resulting shapes and images to understand the commands. Add the argument cmap='gray' to to plt.imshow to display grayscale images properly.
       </em>
      </li>
     </ul>
@@ -356,9 +352,9 @@ plt.show()
      function:
     </p>
     <pre><code># Measure the quality of the noisy images with respect to the clean image
-psnr = compare_psnr(im_noise, im1_gray)
-mse = compare_mse(im_noise, im1_gray)
-ssim = compare_ssim(im_noise, im1_gray)
+psnr = peak_signal_noise_ratio(im_noise, im1_gray)
+mse = mean_squared_error(im_noise, im1_gray)
+ssim = structural_similarity(im_noise, im1_gray)
 print('im_noise: PSNR: {} / MSE: {} / SSIM: {}'.format(psnr, mse, ssim))
 </code></pre>
    </li>
@@ -374,15 +370,15 @@ nrow = int((len(sigmas) + 2) / ncol)
 print('{} image to display on {} columns and {} rows'.format(len(sigmas) + 1, ncol, nrow))
 
 plt.subplot(nrow, ncol, 1)
-psnr = np.round(compare_psnr(im1_gray, im1_gray), 2)
-ssim = np.round(compare_ssim(im1_gray, im1_gray), 2)
+psnr = np.round(peak_signal_noise_ratio(im1_gray, im1_gray), 2)
+ssim = np.round(structural_similarity(im1_gray, im1_gray), 2)
 plt.title('Sigma: {} \nPSNR:{}/SSIM:{}'.format(0, psnr, ssim))
 plt.imshow(im1_gray, cmap='gray')
 for i, sigma in enumerate(sigmas):
     var = np.square(sigma / 255.)  # Compute variance from sigma
     im_noise = random_noise(im1_gray, 'gaussian', mean=0, var=var, seed=0, clip=True)  # Noise the image
-    psnr = np.round(compare_psnr(im_noise, im1_gray), 2)  # Compute PNSR
-    ssim = np.round(compare_ssim(im_noise, im1_gray), 2)  # Compute SSIM
+    psnr = np.round(peak_signal_noise_ratio(im_noise, im1_gray), 2)  # Compute PNSR
+    ssim = np.round(structural_similarity(im_noise, im1_gray), 2)  # Compute SSIM
     plt.subplot(nrow, ncol, i + 2)
     plt.title('Sigma: {} \n{}/{}'.format(sigma, psnr, ssim))
     plt.imshow(im_noise, cmap='gray')
@@ -440,7 +436,7 @@ def filter_loop(noisy_image, kernel, padding_type='zeros'):
     # Loop over the image
     for i in range(0, height):
         for j in range(0, width):
-        output[i, j] = np.sum(np.multiply(kernel, padded_input[i:i+kernel_size, j:j+kernel_size]))
+            output[i, j] = np.sum(np.multiply(kernel, padded_input[i:i+kernel_size, j:j+kernel_size]))
 
     return output
 
@@ -455,26 +451,26 @@ print_psnr_ssim(hand_denoised, im1_gray, 'Mean Denoised')
     <p>
      Easier Filtering using convolve tool:
     </p>
-    <pre><code>  # Measure noisy PSNR/SSIM
-  print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
+    <pre><code># Measure noisy PSNR/SSIM
+print_psnr_ssim(im_noise_lib, im1_gray, 'Noisy')
 
-  # Filter
-  def mean_filter(input, kernel_size):
+# Filter
+def mean_filter(input, kernel_size):
     kernel = np.ones((kernel_size, kernel_size))
     output = 1 / np.square(kernel_size) * convolve(input, kernel)
     return output
-  mean_denoised = mean_filter(im_noise_lib, 3)
+mean_denoised = mean_filter(im_noise_lib, 3)
 
-  # Measure denoised PSNR/SSIM
-  print_psnr_ssim(gauss_denoised, im1_gray, 'Mean Denoised using Convolve')
+# Measure denoised PSNR/SSIM
+print_psnr_ssim(mean_denoised, im1_gray, 'Mean Denoised using Convolve')
 </code></pre>
-    <ul>
-     <li>
-      <em>
-       Try different filter kernel sizes.
-      </em>
-     </li>
-    </ul>
+   </li>
+   <li>
+    <p>
+     <em>
+      Try different filter kernel sizes.
+     </em>
+    </p>
    </li>
    <li>
     <p>
@@ -509,7 +505,7 @@ fft_thresh[middle_y - half_y_keep: middle_y + half_y_keep, middle_x - half_x_kee
 im_denoised = ifft2(ifftshift(fft_thresh)).real
 im_denoised = np.clip(im_denoised, 0., 1.)  # Ensure the values stay in [0., 1.]
 
-print_psnr_ssim(im_denoised, im1_gray, 'Denoised')
+print_psnr_ssim(im_denoised, im1_gray, 'FFT + Threshold Denoised')
 
 # Display
 if True:

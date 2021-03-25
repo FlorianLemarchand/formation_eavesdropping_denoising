@@ -6,6 +6,7 @@ Date: 2020/2021
 # ========= Imports =========
 import numpy as np
 from os import makedirs
+from pybm3d import bm3d
 import matplotlib.pyplot as plt
 from skimage.color import rgb2gray
 from matplotlib.colors import LogNorm
