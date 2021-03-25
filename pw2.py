@@ -172,15 +172,14 @@ if question_solver(question, 5):
         # Load model
         saved_model_path = 'logs/dncnn_sigma100/best_model.pth'
         print('Loading Model from: {}'.format(saved_model_path))
-        checkpoint = torch.load(saved_model_path)
-        model.load_state_dict(checkpoint)
 
-        # Move model to GPU memory if available
         device = 'cpu'
         if torch.cuda.is_available():
-            model = model.cuda()
+            model = model.cuda()  # Move model to GPU memory if available
             print('Model moved to GPU!')
             device = 'cuda'
+        checkpoint = torch.load(saved_model_path, map_location=device)
+        model.load_state_dict(checkpoint)
 
         # Init the mse sum of test samples
         test_mse_sum = 0
@@ -245,15 +244,13 @@ if question_solver(question, 6):
         saved_model_path = 'logs/natural_intercept_dncnn_17/best_model.pth' # TO CHANGE Q6
         print('Loading Model from: {}'.format(saved_model_path))
 
-        checkpoint = torch.load(saved_model_path)
-        model.load_state_dict(checkpoint)
-
-        # Move model to GPU memory if available
         device = 'cpu'
         if torch.cuda.is_available():
-            model = model.cuda()
+            model = model.cuda() # Move model to GPU memory if available
             print('Model moved to GPU!')
             device = 'cuda'
+        checkpoint = torch.load(saved_model_path, map_location=device)
+        model.load_state_dict(checkpoint)
 
         # Init the mse sum of test samples
         test_mse_sum = 0
