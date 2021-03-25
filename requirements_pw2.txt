@@ -6,4 +6,4 @@ pillow
 torchsummary
 tensorboardX
 torchvision
-tensorboard
+tensorboard == 1.15.0

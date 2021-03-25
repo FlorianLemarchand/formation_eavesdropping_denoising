@@ -5,9 +5,9 @@ Date: 2020
 
 # ========= Imports =========
 from math import log10
+from utils_PW2 import *
 import matplotlib.pyplot as plt
 from torchsummary import summary
-from utils_PW2_complete import *
 from torchvision.utils import save_image, make_grid
 
 # ========= Question selector ============
