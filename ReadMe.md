@@ -1,4 +1,4 @@
-# Towards Eavedropped Image Denoising
+# Towards Eavesdropped Image Denoising
 
 ## Practical Work 1 -- PW1 -- Basics of Image Processing and Denoising
 
