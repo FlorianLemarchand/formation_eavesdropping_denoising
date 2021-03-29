@@ -1,5 +1,7 @@
 # Towards Eavesdropped Image Denoising
 
+Related Lecture Slides --> [link](https://florianlemarchand.github.io/ressources/pdfs/2020-06-11-Towards_Eavesdropped_image_denoising.pdf)
+
 ## Practical Work 1 -- PW1 -- Basics of Image Processing and Denoising
 
 Subject --> [PW1.html](./PW1.html) 
